@@ -50,27 +50,38 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void QuestionsReceived(int[] questions)
     {
-        foreach (int question in questions)
-        {
-            Debug.Log("Question: " + question);
-        }
-
+        //foreach (int question in questions)
+        //{
+        //    Debug.Log("Question: " + question);
+        //}
+        FindObjectOfType<BattleRoomManager>().RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
     }
 
     public void ScoresReceived(int[] viewIds, int[] scores)
     {
-        for (int i = 0; i < viewIds.Length; i++)
-        {
-            if (PhotonNetwork.GetPhotonView(viewIds[i]).IsMine)
-            {
-                Debug.Log("My scored: " + scores[i]);
-            }
-            else
-            {
-                Debug.Log(viewIds[i] + " scored: " + scores[i]);
-            }
+        BattleRoomManager.Instance.RequestOnEndBattle();
+        BattleRoomManager.Instance.RequestOnAnnounceWinner(viewIds, scores);
+        //for (int i = 0; i < viewIds.Length; i++)
+        //{
+        //    //if (PlayerManager.IsMine(viewIds[i]))
+        //    //{
+        //    //    Debug.Log("My scored: " + scores[i]);
+        //    //}
+        //    //else
+        //    //{
+        //    //    Debug.Log(viewIds[i] + " scored: " + scores[i]);
+        //    //}
+        //=======================================================================
+        //    //if (PhotonNetwork.GetPhotonView(viewIds[i]).IsMine)
+        //    //{
+        //    //    Debug.Log("My scored: " + scores[i]);
+        //    //}
+        //    //else
+        //    //{
+        //    //    Debug.Log(viewIds[i] + " scored: " + scores[i]);
+        //    //}
 
-        }
+        //}
     }
 
     public void ReadyStateReceived(bool allReady)

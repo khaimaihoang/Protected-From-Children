@@ -7,7 +7,7 @@ public class ResultLounge : MonoBehaviour
 {
     private Button _leaveButton;
     private Text _scoreText, _winnerText;
-
+    private int _winnerID, _myScore;
     private GameObject _battleLounge, _waitingLounge, _resultLounge;
     
     public void Init()
@@ -17,8 +17,6 @@ public class ResultLounge : MonoBehaviour
         _winnerText = GameObject.Find("Winner").GetComponent<Text>();
 
         _leaveButton.onClick.AddListener(OnControllerLeaveRoomClicked);
-
-        this.OnControllerAnnounceResult();
     }
 
     public void Init(GameObject waitingLounge, GameObject battleLounge, GameObject resultLounge)
@@ -30,9 +28,25 @@ public class ResultLounge : MonoBehaviour
     }
 
     #region Controller
-    private void OnControllerAnnounceResult()
+    private void OnControllerAnnounceResult(int[] viewIDs, int[] scores)
     {
-        //Request Server get result
+        int maxScore = scores[0];
+        int winnerID = viewIDs[0];
+        for(int i = 0; i < viewIDs.Length; i++)
+        {
+            if(maxScore < scores[i])
+            {
+                maxScore = scores[i];
+                winnerID = viewIDs[i];
+            }
+
+            //if (PlayerManager.IsMine(viewIds[i]))
+            //{
+            //    _myScore = scores[i];
+            //}
+            
+        }
+        this._winnerID = winnerID;
         this.OnViewAnnounceResult();
     }
     #endregion
@@ -42,7 +56,8 @@ public class ResultLounge : MonoBehaviour
     {
         //Get winner text name
         //Get current player score
-        _scoreText.text = "Your Score: " + BattleLounge.points;
+        _winnerText.text = "WINNER: " + _winnerID;
+        _scoreText.text = "Your Score: " + _myScore; //+ BattleLounge.points;
         
     }
 
@@ -52,4 +67,16 @@ public class ResultLounge : MonoBehaviour
         //Send request left room
     }
     #endregion 
+
+    #region Event Registers
+    private void OnEnable()
+    {
+        BattleRoomManager.Instance.OnAnnounceWinner += OnControllerAnnounceResult;
+    }
+
+    private void OnDisable()
+    {
+        BattleRoomManager.Instance.OnAnnounceWinner -= OnControllerAnnounceResult;
+    }
+    #endregion
 }
