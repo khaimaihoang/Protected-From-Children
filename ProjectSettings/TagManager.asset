@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 2434932133
+    locked: 0
+  - name: Upper Ground
+    uniqueID: 4217752191
+    locked: 0
+  - name: Standing Objects
+    uniqueID: 3630815739
+    locked: 0
+  - name: Player
+    uniqueID: 2675182183
+    locked: 0
+  - name: Particle Effects
+    uniqueID: 3553585321
+    locked: 0

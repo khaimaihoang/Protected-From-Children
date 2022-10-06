@@ -53,16 +53,15 @@ public class WaitingLounge : MonoBehaviour
     {
         Debug.Log("Player left room");
         //Send request left room
-        this.OnControllerStartBattle();
     }
 
-    private void OnControllerStartBattle()
+    private void OnControllerStartBattle(int[] questions)
     {
         Debug.Log("Start battle now");
         _battleLounge.SetActive(true);
         _waitingLounge.SetActive(false);
 
-        this.GetComponent<BattleLounge>().Init(_waitingLounge, _battleLounge, _resultLounge);
+        this.GetComponent<BattleLounge>().Init(_waitingLounge, _battleLounge, _resultLounge, questions);
     }
 
     #endregion
@@ -82,5 +81,18 @@ public class WaitingLounge : MonoBehaviour
         }
 
     }
+    #endregion
+
+    #region Event Registers
+    private void OnEnable()
+    {
+        BattleRoomManager.Instance.OnStartBattle += OnControllerStartBattle;
+    }
+
+    private void OnDisable()
+    {
+        BattleRoomManager.Instance.OnStartBattle -= OnControllerStartBattle;
+    }
+
     #endregion
 }
