@@ -40,6 +40,13 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetClientPositionEventCode, content, raiseEventOptions, SendOptions.SendUnreliable);
     }
 
+    public void SendReplyChangeNewUid(int newUid)
+    {
+        object content = new object[1] { newUid };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetChangeNewUidEventCode, content, raiseEventOptions, SendOptions.SendReliable);
+    }
+
     public void SendWinnerReply(int viewId)
     {
         object content = viewId;

@@ -33,9 +33,15 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
         }
     }
 
-    public void GetNewUid(){
-        int newUid = AddNewPlayer();
-        SendReply.Instance.SendReplyNewUid(newUid);
+    public void CheckNewUid(int newUid){
+        if (playerList.Contains(newUid))
+        {
+            SendReply.Instance.SendReplyChangeNewUid(newUid);
+        }
+        else
+        {
+            SendReply.Instance.SendReplyNewUid(newUid);
+        }
     }
 
     public int AddNewPlayer(int viewId = -1)
