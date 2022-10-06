@@ -69,4 +69,8 @@ public class SendRequest : MonoSingleton<SendRequest>
         Debug.Log("Send Exit Request");
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
+
+    public void SendRequestNewUid(){
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestNewUidEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    }
 }

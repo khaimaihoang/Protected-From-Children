@@ -16,6 +16,7 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
     [SerializeField] private bool _checkWinner = false;
     [SerializeField] private Vector3 _goalCenter= Vector3.zero;
     [SerializeField] private Vector3 _goalSize = Vector3.one;
+    [SerializeField] private int minUid = 1, maxUid = 9999;
     private Bounds _goalBound;
 
     void Awake(){
@@ -32,14 +33,25 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
         }
     }
 
-    public void AddNewPlayer(int viewId)
+    public void GetNewUid(){
+        int newUid = AddNewPlayer();
+        SendReply.Instance.SendReplyNewUid(newUid);
+    }
+
+    public int AddNewPlayer(int viewId = -1)
     {
+        if (viewId < 0){
+            do{
+                viewId = UnityEngine.Random.Range(minUid, maxUid);
+            }while (playerList.Contains(viewId));
+        }
+
         if (!playerList.Contains(viewId))
         {
             playerList.Add(viewId);
             playerPositions.Add(viewId, Vector3.zero);
         }
-        
+        return viewId;
     }
 
     public void PlayerInputProcess(int viewId, int playerInput)
