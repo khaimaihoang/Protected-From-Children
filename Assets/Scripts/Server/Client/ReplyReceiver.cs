@@ -67,5 +67,10 @@ public class ReplyReceiver : MonoBehaviour
             Debug.Log("Reply Exit Room");
             ClientProcess.Instance.JoinGeneralRoom();
         }
+        else if (eventCode == (byte)NetworkEvent.GetNewUidEventCode){
+            object[] data = (object[])photonEvent.CustomData;
+            int newUid = (int)data[0];
+            ClientProcess.Instance.AddNewPlayerWithId(newUid);
+        }
     }
 }

@@ -69,7 +69,7 @@ public class PullTileObject : MonoBehaviour
     {
         if (!_stopToPull)
         {
-            if (_playerTransform.GetComponent<PhotonView>().IsMine)
+            if (_playerTransform.GetComponent<PlayerManager>().IsMine())
             {
                 GetCellsByRadiusAndOutside(radius, outside);
             }
