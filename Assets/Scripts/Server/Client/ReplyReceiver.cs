@@ -72,5 +72,12 @@ public class ReplyReceiver : MonoBehaviour
             int newUid = (int)data[0];
             ClientProcess.Instance.AddNewPlayerWithId(newUid);
         }
+        else if (eventCode == (byte)NetworkEvent.GetChangeNewUidEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int newUid = (int)data[0];
+            ClientProcess.Instance.SendNewCheckUidRequest(newUid);
+
+        }
     }
 }

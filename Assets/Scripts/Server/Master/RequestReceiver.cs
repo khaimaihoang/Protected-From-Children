@@ -79,8 +79,11 @@ public class RequestReceiver : MonoBehaviour
             Debug.Log("Request exit received");
             BattleProcess.Instance.ExitGame();
         }
-        else if (eventCode == (byte)NetworkEvent.RequestNewUidEventCode){
-            NetworkProcess.Instance.GetNewUid();
+        else if (eventCode == (byte)NetworkEvent.RequestCheckNewUidEventCode)
+        {
+            object data = (object)photonEvent.CustomData;
+            int newUid = (int)data;
+            NetworkProcess.Instance.CheckNewUid(newUid);
         }
     }
 }

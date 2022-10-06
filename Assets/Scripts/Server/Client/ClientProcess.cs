@@ -11,6 +11,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     private GameObject[] players;
     private PlayerManager playerManager;
     JoinAnotherRoom _joinAnotherRoom;
+    bool _isAuthentizated = false;
 
     // private PlayerManager playerManager;
     void Awake()
@@ -90,14 +91,14 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void AddNewPlayerWithId(int newUid){
         players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var player in players)
+        _isAuthentizated = true;
+    }
+
+    public void SendNewCheckUidRequest(int newUid)
+    {
+        if (playerManager.viewId == newUid && !_isAuthentizated)
         {
-            PlayerManager playerManager = player.GetComponent<PlayerManager>();
-            if (playerManager.viewId == 0){
-                playerManager.viewId = newUid;
-                PlayerPrefs.SetInt("viewId", newUid);
-                return;
-            }
+            SendRequest.Instance.SendRequestCheckNewUid();
         }
     }
 }

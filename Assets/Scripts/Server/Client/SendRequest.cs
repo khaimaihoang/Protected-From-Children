@@ -67,10 +67,23 @@ public class SendRequest : MonoSingleton<SendRequest>
     public void SendExitRequest()
     {
         Debug.Log("Send Exit Request");
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
 
-    public void SendRequestNewUid(){
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestNewUidEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    //public void SendRequestNewUid()
+    //{
+    //    int tempUid = UnityEngine.Random.RandomRange(0, 10000);
+    //    playerManager.viewId = tempUid;
+    //    PlayerPrefs.SetInt("viewId", tempUid);
+    //    object content = playerManager.viewId;
+    //    PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestNewUidEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    //}
+
+    public void SendRequestCheckNewUid(){
+        int tempUid = UnityEngine.Random.Range(0, 10);
+        playerManager.viewId = tempUid;
+        PlayerPrefs.SetInt("viewId", tempUid);
+        object content = playerManager.viewId ;
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestCheckNewUidEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
 }

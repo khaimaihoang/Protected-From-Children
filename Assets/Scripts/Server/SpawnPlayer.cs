@@ -28,6 +28,6 @@ public class SpawnPlayer : MonoBehaviour
             GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         ClientsViewController.Instance.RequestOnInitPlayerViews();
         SendRequest.Instance.Init();
-        SendRequest.Instance.SendRequestNewUid();
+        SendRequest.Instance.SendRequestCheckNewUid();
     }
 }
