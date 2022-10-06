@@ -28,8 +28,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         players = GameObject.FindGameObjectsWithTag("Player");
         foreach (var player in players)
         {
-            PhotonView photonView = player.GetComponent<PhotonView>();
-            int viewId = photonView.ViewID;
+            int viewId = playerManager.viewId;
             if (!playerPositionFromServer.ContainsKey(viewId)) continue;
             player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[viewId]);
         }
@@ -98,5 +97,18 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     {
         PlayerPrefs.SetString("roomName", InputManager.Instance.GeneralRoom);
         _joinAnotherRoom.Leave("Photon_Demo");
+    }
+
+    public void AddNewPlayerWithId(int newUid){
+        players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var player in players)
+        {
+            PlayerManager playerManager = player.GetComponent<PlayerManager>();
+            if (playerManager.viewId == 0){
+                playerManager.viewId = newUid;
+                PlayerPrefs.SetInt("viewId", newUid);
+                return;
+            }
+        }
     }
 }

@@ -79,4 +79,10 @@ public class SendReply : MonoSingleton<SendReply>
     {
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
+
+    public void SendReplyNewUid(int newUid){
+        object content = new object[1]{newUid};
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetNewUidEventCode, content, raiseEventOptions, SendOptions.SendReliable);
+    }
 }

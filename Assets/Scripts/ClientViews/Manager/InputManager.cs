@@ -27,7 +27,9 @@ public enum NetworkEvent : byte
     GetScoresEventCode,
     GetReadyEventCode,
     AllInRoomEventCode,
-    ExitEventCode
+    ExitEventCode,
+    RequestNewUidEventCode,
+    GetNewUidEventCode
 }
 
 public class InputManager : MonoSingleton<InputManager>
