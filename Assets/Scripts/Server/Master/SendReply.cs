@@ -42,9 +42,9 @@ public class SendReply : MonoSingleton<SendReply>
 
     public void SendReplyChangeNewUid(int newUid)
     {
-        object content = new object[1] { newUid };
+        object content = newUid;
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetChangeNewUidEventCode, content, raiseEventOptions, SendOptions.SendReliable);
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.ChangeNewUidEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
     public void SendWinnerReply(int viewId)
@@ -87,9 +87,9 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
 
-    public void SendReplyNewUid(int newUid){
-        object content = new object[1]{newUid};
+    public void SendReplyNewUidAccepted(int newUid){
+        object content = newUid;
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetNewUidEventCode, content, raiseEventOptions, SendOptions.SendReliable);
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.NewUidAcceptedEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 }

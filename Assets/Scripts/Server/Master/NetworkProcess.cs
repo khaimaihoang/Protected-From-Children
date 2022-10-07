@@ -40,18 +40,13 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
         }
         else
         {
-            SendReply.Instance.SendReplyNewUid(newUid);
+            AddNewPlayer(newUid);
+            SendReply.Instance.SendReplyNewUidAccepted(newUid);
         }
     }
 
     public int AddNewPlayer(int viewId = -1)
     {
-        if (viewId < 0){
-            do{
-                viewId = UnityEngine.Random.Range(minUid, maxUid);
-            }while (playerList.Contains(viewId));
-        }
-
         if (!playerList.Contains(viewId))
         {
             playerList.Add(viewId);
