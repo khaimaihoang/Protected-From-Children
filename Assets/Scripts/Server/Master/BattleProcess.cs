@@ -15,7 +15,6 @@ public class BattleProcess : MonoSingleton<BattleProcess>
 {
     public int numOfQuestions = 2;
     public int scorePerQuestion = 1;
-    [SerializeField] int timeToReady = 2;
 
 
     private Dictionary<int, int> _playerState = new Dictionary<int, int>();
@@ -26,7 +25,6 @@ public class BattleProcess : MonoSingleton<BattleProcess>
     private List<int> _questions = new List<int>();
     private Dictionary<int, string> _answers = new Dictionary<int, string>();
 
-    private float _timeSinceStarted = 0;
     private float _timeToWaitPerSecond = 3f;
     // Start is called before the first frame update
     void Start()

@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 
-public class ButtonZoneController : MonoBehaviourPunCallbacks
+public class ButtonZoneController : MonoBehaviour
 {
     //private GameObject _canvas;
     [SerializeField] Text roomNameText;
