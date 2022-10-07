@@ -8,7 +8,7 @@ using System;
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
     public Dictionary<int, Vector3> playerPositionFromServer;
-    private Dictionary<int, GameObject> players;
+    public Dictionary<int, GameObject> players;
     JoinAnotherRoom _joinAnotherRoom;
     bool _isAuthentizated = false;
     public int thisPlayerUid;
@@ -110,11 +110,18 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     }
 
     public void CreateNewPlayer(int newUid){
-        if (thisPlayerUid == newUid){
+        CreatePlayerWithUid(newUid);
+        if (thisPlayerUid == newUid){ // ClientProcess of new player
             _isAuthentizated = true;
+            ClientsViewController.Instance.RequestOnInitPlayerViews();
+            ClientsViewController.Instance.RequestOnStopToPull(false);
+            InitCamera();
             SendRequest.Instance.Init();
         }
-        CreatePlayerWithUid(newUid);
+    }
+
+    private void InitCamera(){
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowPlayer>().followTarget = players[thisPlayerUid].transform;
     }
 
     private void CreatePlayerWithUid(int uid){
