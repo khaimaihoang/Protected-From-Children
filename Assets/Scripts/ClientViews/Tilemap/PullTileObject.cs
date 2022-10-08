@@ -13,11 +13,7 @@ public class PullTileObject : MonoBehaviour
     private TileData _tileData;
     // List<Vector3Int> _standingTiles;
     // List<Vector3Int> _nearbyTiles;
-    private int _boundCell = 2;
-    private int _outsideCell = 2;
-    private float _timeCount = 0;
     private float _rotateSpeed = 10;
-    private bool flagPull = false;
     private bool _stopToPull = true;
 
     public int radius, outside;
@@ -35,7 +31,8 @@ public class PullTileObject : MonoBehaviour
     {
         _tilemaps = new List<Tilemap>();
         _mainCamera = GameObject.FindObjectOfType<Camera>();
-        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        // _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        _playerTransform = ClientProcess.Instance.players[ClientProcess.Instance.thisPlayerUid].transform;
 
         GameObject _mainGrid = GameObject.Find("MainGrid");
         if (_mainGrid != null)

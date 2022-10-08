@@ -8,52 +8,53 @@ using ExitGames.Client.Photon;
 public class SendRequest : MonoSingleton<SendRequest>
 {
     //public const byte (byte)NetworkEvent.PositionEventCode = 1;
-    private PlayerManager playerManager;
+    private int thisPlayerUid;
     // Start is called before the first frame update
     public void Init()
     {
-        playerManager = FindObjectOfType<PlayerManager>();
+        // playerManager = FindObjectOfType<PlayerManager>();
+        thisPlayerUid = ClientProcess.Instance.thisPlayerUid;
         if (PhotonNetwork.CurrentRoom.Name == InputManager.Instance.GeneralRoom) SendPlayerInputRequest((int)PlayerInput.STOP);
         // StartCoroutine(SendPlayerPositionRequestCoroutine(0.01f));
     }
 
-    IEnumerator SendPlayerPositionRequestCoroutine(float time){
-        while(true){
-            SendPlayerPositionRequest();
-            yield return new WaitForSeconds(time);
-        }
-    }
+    // IEnumerator SendPlayerPositionRequestCoroutine(float time){
+    //     while(true){
+    //         SendPlayerPositionRequest();
+    //         yield return new WaitForSeconds(time);
+    //     }
+    // }
 
-    public void SendPlayerPositionRequest(){
-        object[] content = new object[] {playerManager.viewId, playerManager.transform.position};
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.PositionEventCode, content, raiseEventOptions, SendOptions.SendUnreliable);
-    }
+    // public void SendPlayerPositionRequest(){
+    //     object[] content = new object[] {thisPlayerUid, playerManager.transform.position};
+    //     RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
+    //     PhotonNetwork.RaiseEvent((byte)NetworkEvent.PositionEventCode, content, raiseEventOptions, SendOptions.SendUnreliable);
+    // }
 
     public void SendPlayerInputRequest(int playerInput)
     {
-        object[] content = new object[] { playerManager.viewId, playerInput };
+        object[] content = new object[] { thisPlayerUid, playerInput };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.InputEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
     public void SendBattleRequest(int targetViewId)
     {
-        object[] content = new object[] { playerManager.viewId, targetViewId };
+        object[] content = new object[] { thisPlayerUid, targetViewId };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.BattleRequestEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
     
     public void SendAnswers(string[] answers)
     {
-        object[] content = new object[] { playerManager.viewId, answers };
+        object[] content = new object[] { thisPlayerUid, answers };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.AnswerEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
     public void SendStateChangeRequest(int state)
     {
-        object[] content = new object[] { playerManager.viewId, state };
+        object[] content = new object[] { thisPlayerUid, state };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.StateChangeEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
@@ -73,17 +74,14 @@ public class SendRequest : MonoSingleton<SendRequest>
     //public void SendRequestNewUid()
     //{
     //    int tempUid = UnityEngine.Random.RandomRange(0, 10000);
-    //    playerManager.viewId = tempUid;
+    //    thisPlayerUid = tempUid;
     //    PlayerPrefs.SetInt("viewId", tempUid);
-    //    object content = playerManager.viewId;
+    //    object content = thisPlayerUid;
     //    PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestNewUidEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     //}
 
-    public void SendRequestCheckNewUid(){
-        int tempUid = UnityEngine.Random.Range(0, 10);
-        playerManager.viewId = tempUid;
-        PlayerPrefs.SetInt("viewId", tempUid);
-        object content = playerManager.viewId ;
+    public void SendRequestCheckNewUid(int newUid){
+        object content = newUid ;
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestCheckNewUidEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
 }

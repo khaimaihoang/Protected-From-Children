@@ -8,30 +8,39 @@ using System;
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
     public Dictionary<int, Vector3> playerPositionFromServer;
-    private GameObject[] players;
-    private PlayerManager playerManager;
+    public Dictionary<int, GameObject> players;
     JoinAnotherRoom _joinAnotherRoom;
     bool _isAuthentizated = false;
-
-    // private PlayerManager playerManager;
+    public int thisPlayerUid;
     void Awake()
     {
         playerPositionFromServer = new Dictionary<int, Vector3>();
+        players = new Dictionary<int, GameObject>();
+        GenNewPlayerUid();
     }
 
     void Start(){
-        playerManager = FindObjectOfType<PlayerManager>();
+        // playerManager = FindObjectOfType<PlayerManager>();
         _joinAnotherRoom = FindObjectOfType<JoinAnotherRoom>();
     }
 
     public void UpdatePlayerPosition()
     {
-        players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var player in players)
-        {
-            int viewId = playerManager.viewId;
-            if (!playerPositionFromServer.ContainsKey(viewId)) continue;
-            player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[viewId]);
+        // players = GameObject.FindGameObjectsWithTag("Player");
+        // foreach (var player in players)
+        // {
+        //     int viewId = player.GetComponent<PlayerManager>().viewId;
+        //     if (!playerPositionFromServer.ContainsKey(viewId)) continue;
+        //     player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[viewId]);
+        // }
+        foreach(var item in playerPositionFromServer){
+            int viewId = item.Key;
+            Vector3 pos = item.Value;
+            if (!players.ContainsKey(viewId)){
+                CreateNewPlayer(viewId);
+            }
+            GameObject player = players[viewId];
+            player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
         }
     }
 
@@ -42,7 +51,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void BattleRequestReceived(int requestViewId, int targetViewId)
     {
-        if (targetViewId == playerManager.viewId)
+        if (targetViewId == thisPlayerUid)
         {
             Debug.Log(targetViewId + ", you received a battle request from: " + requestViewId);
         }
@@ -89,16 +98,40 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         _joinAnotherRoom.Leave("Photon_Demo");
     }
 
-    public void AddNewPlayerWithId(int newUid){
-        players = GameObject.FindGameObjectsWithTag("Player");
-        _isAuthentizated = true;
+    public void CreateNewPlayer(int newUid){
+        CreatePlayerWithUid(newUid);
+        if (thisPlayerUid == newUid){ // ClientProcess of new player
+            _isAuthentizated = true;
+            ClientsViewController.Instance.RequestOnInitPlayerViews();
+            ClientsViewController.Instance.RequestOnStopToPull(false);
+            InitCamera();
+            SendRequest.Instance.Init();
+        }
     }
 
-    public void SendNewCheckUidRequest(int newUid)
+    private void InitCamera(){
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowPlayer>().followTarget = players[thisPlayerUid].transform;
+    }
+
+    private void CreatePlayerWithUid(int uid){
+        GameObject playerPrefab = Resources.Load<GameObject>("Player");
+        GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        newPlayer.GetComponent<PlayerManager>().viewId = uid;
+        players[uid] = newPlayer;
+    }
+
+    public void ChangeUid(int newUid)
     {
-        if (playerManager.viewId == newUid && !_isAuthentizated)
+        if (thisPlayerUid == newUid && !_isAuthentizated)
         {
-            SendRequest.Instance.SendRequestCheckNewUid();
+            GenNewPlayerUid();
         }
+    }
+
+    public void GenNewPlayerUid(){
+        int newUid = UnityEngine.Random.Range(0, 10);
+        thisPlayerUid = newUid;
+        // PlayerPrefs.SetInt("viewId", newUid);
+        SendRequest.Instance.SendRequestCheckNewUid(newUid);
     }
 }

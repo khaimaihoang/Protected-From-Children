@@ -19,7 +19,7 @@ public class BattleLounge : MonoBehaviour
 
     public float timerPerQuestion;
     private float _currentTimer;
-    private bool _startTimer, _transitionTimer = false;
+    private bool _startTimer = false;
 
     private void Update()
     {
