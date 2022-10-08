@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class BattleLounge : MonoBehaviour
 {
-    public static float points = 0; //delete after connect to server
-
     private Button _AButton, _BButton, _CButton, _DButton;
     private Text _AAnswer, _BAnswer, _CAnswer, _DAnswer;
     //private List<Text> _textList;
@@ -16,10 +14,11 @@ public class BattleLounge : MonoBehaviour
     private List<QuestionForm> _questForms;
     public List<string> _playerAnswers;
     private int currentIdx;
+    private int[] _questionIds;
 
     public float timerPerQuestion;
     private float _currentTimer;
-    private bool _startTimer = false;
+    private bool _startTimer, _doneWaiting = false;
 
     private void Update()
     {
@@ -56,16 +55,18 @@ public class BattleLounge : MonoBehaviour
         _CButton.onClick.AddListener(() => { OnControllerAnswerClicked(_CButton); });
         _DButton.onClick.AddListener(() => { OnControllerAnswerClicked(_DButton); });
 
-        _currentTimer = timerPerQuestion + 1;
+        _currentTimer = timerPerQuestion;
         this.OnControllerRenewQuestion();
 
     }
 
-    public void Init(GameObject waitingLounge, GameObject battleLounge, GameObject resultLounge)
+    public void Init(GameObject waitingLounge, GameObject battleLounge, GameObject resultLounge, int[] questions)
     {
         _waitingLounge = waitingLounge;
         _battleLounge = battleLounge;
         _resultLounge = resultLounge;
+
+        _questionIds = questions;
         this.Init();
     }
 
@@ -77,58 +78,37 @@ public class BattleLounge : MonoBehaviour
             if(choseButton != null)
             {
                 _playerAnswers.Add(choseButton.GetComponentInChildren<Text>().text[0] + "");
-
-                //delete after connect to server
-                if(_playerAnswers[_playerAnswers.Count - 1] == _questForms[currentIdx - 1].correctAnswer)
-                {
-                    points++;
-                }
             }
             else
             {
                 _playerAnswers.Add("Null");
             }
-            //StartCoroutine(WaitRenewQuestion());
             this.OnControllerRenewQuestion();
         }
         else
         {
             Debug.Log("End game");
-            //foreach (var answer in _playerAnswers)
-            //{
-            //    Debug.Log(answer);
-            //}
-            this.OnControllerEndBattle();
+            _battleLounge.SetActive(false);
+            //this.OnControllerEndBattle();
+            StartCoroutine(WaitForOtherToFinish());
         }
     }
 
     private void OnControllerRenewQuestion()
     {
-        this.OnViewRenewQuestion(_questForms[currentIdx]);
+        this.OnViewRenewQuestion(_questForms[_questionIds[currentIdx]]);
         currentIdx++;
 
-        _currentTimer = timerPerQuestion + 1;
+        _currentTimer = timerPerQuestion;
         _startTimer = true;
-        //this.OnControllerWaitTimerBetweenQuestion(1.5f);
     }
 
     private void OnControllerEndBattle()
     {
-        _battleLounge.SetActive(false);
-        //wait for others player or times up
-        //if others not finished -> return wait for others
-        //else
-        //Load result
-        if (false)
-        {
-            return;
-        }
-        else
-        {
-            _resultLounge.SetActive(true);
-            GetComponent<ResultLounge>().Init(_waitingLounge, _battleLounge, _resultLounge);
-        }
-        
+        _doneWaiting = true;
+        //_battleLounge.SetActive(false);
+        _resultLounge.SetActive(true);
+        this.GetComponent<ResultLounge>().Init(_waitingLounge, _battleLounge, _resultLounge);  
     }
 
     private void OnControllerTimer()
@@ -146,10 +126,6 @@ public class BattleLounge : MonoBehaviour
         this.OnViewTimer();
     }
 
-    private void OnControllerWaitTimerBetweenQuestion(float waitTime)
-    {
-        
-    }
     #endregion
 
     #region View
@@ -173,6 +149,32 @@ public class BattleLounge : MonoBehaviour
             _timerText.color = Color.black;
         }
         _timerText.text = string.Format("{0:00}:{1:00}", Mathf.FloorToInt(_currentTimer), (Mathf.Abs(_currentTimer - Mathf.FloorToInt(_currentTimer)) * 100));
+    }
+    #endregion
+
+    #region Event Registers
+    private void OnEnable()
+    {
+        BattleRoomManager.Instance.OnEndBattle += OnControllerEndBattle;
+    }
+
+    private void OnDisable()
+    {
+        BattleRoomManager.Instance.OnEndBattle -= OnControllerEndBattle;
+    }
+    #endregion
+
+    #region Coroutines
+    IEnumerator WaitForOtherToFinish()
+    {
+        Debug.Log("Waiting...");
+        yield return new WaitUntil(WaitForScores);
+        Debug.Log("Wait Done!");
+    }
+
+    private bool WaitForScores()
+    {
+        return _doneWaiting;
     }
     #endregion
 }
