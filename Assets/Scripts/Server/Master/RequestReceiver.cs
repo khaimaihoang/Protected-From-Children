@@ -58,7 +58,7 @@ public class RequestReceiver : MonoBehaviour
             {
                 return;
             }
-            BattleProcess.Instance.AnswerReceived(viewId, answers);
+            // BattleProcess.Instance.AnswerReceived(viewId, answers);
         }
         else if (eventCode == (byte)NetworkEvent.StateChangeEventCode)
         {
@@ -69,15 +69,15 @@ public class RequestReceiver : MonoBehaviour
             {
                 return;
             }
-            BattleProcess.Instance.PlayerStateChange(viewId, state);
+            // BattleProcess.Instance.PlayerStateChange(viewId, state);
         } else if (eventCode == (byte)NetworkEvent.AllInRoomEventCode)
         {
             Debug.Log("Request Received");
-            BattleProcess.Instance.StartWaitForReady();
+            // BattleProcess.Instance.StartWaitForReady();
         } else if (eventCode == (byte)NetworkEvent.ExitEventCode)
         {
             Debug.Log("Request exit received");
-            BattleProcess.Instance.ExitGame();
+            // BattleProcess.Instance.ExitGame();
         }
         else if (eventCode == (byte)NetworkEvent.RequestCheckNewUidEventCode)
         {
