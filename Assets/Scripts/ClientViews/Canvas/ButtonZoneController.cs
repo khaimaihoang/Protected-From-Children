@@ -43,7 +43,7 @@ public class ButtonZoneController : MonoBehaviour
 
     void OnJoinRoomBtn()
     {
-
+        SendRequest.Instance.SendJoinRoomRequest(int.Parse(_roomCode.text), ClientProcess.Instance.thisPlayerUid);
     }
 
     private void OnEnable()
