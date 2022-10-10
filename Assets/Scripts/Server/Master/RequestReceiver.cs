@@ -85,5 +85,26 @@ public class RequestReceiver : MonoBehaviour
             int newUid = (int)data;
             NetworkProcess.Instance.CheckNewUid(newUid);
         }
+        else if (eventCode == (byte)NetworkEvent.CreateNewRoomEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int roomCode = (int)data[0];
+            int userId = (int)data[1];
+            int minigame = (int)data[2];
+            RoomManager.Instance.CreateMinigameRoom(roomCode, userId, 2, (Minigame)minigame);
+        }
+        else if (eventCode == (byte)NetworkEvent.JoinRoomEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int roomCode = (int)data[0];
+            int userId = (int)data[1];
+            if (RoomManager.Instance.JoinMinigameRoom(roomCode, userId))
+            {
+                SendReply.Instance.SendJoinRoomReply(userId, RoomManager.Instance.roomInfos[roomCode].minigame);
+            } else
+            {
+                SendReply.Instance.SendJoinRoomReply(userId, Minigame.None);
+            }
+        }
     }
 }

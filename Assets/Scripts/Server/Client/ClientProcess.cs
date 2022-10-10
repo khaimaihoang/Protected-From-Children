@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using UnityEngine.SceneManagement;
 
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
@@ -144,5 +145,13 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         thisPlayerUid = newUid;
         // PlayerPrefs.SetInt("viewId", newUid);
         SendRequest.Instance.SendRequestCheckNewUid(newUid);
+    }
+
+    public void LoadMinigameScene(int userId, int minigame)
+    {
+        if (thisPlayerUid == userId)
+        {
+            SceneManager.LoadScene((Minigame)minigame + "Minigame");
+        }
     }
 }

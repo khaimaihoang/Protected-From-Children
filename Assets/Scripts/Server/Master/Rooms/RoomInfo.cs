@@ -5,7 +5,7 @@ using UnityEngine;
 public enum RoomState: int
 {
     Waiting,
-        Playing
+    Playing
 }
 public class RoomInfo : MonoBehaviour
 {
@@ -17,6 +17,12 @@ public class RoomInfo : MonoBehaviour
     public BattleProcess battleProcess { get; private set; }
 
     private List<int> readyingPlayers;
+
+    public RoomInfo()
+    {
+        currentPlayers = new List<int>();
+        readyingPlayers = new List<int>();
+    }
 
     public void SetRoomInfo(int roomId, int creatingPlayer, int maxPlayer, Minigame minigame)
     {
@@ -44,6 +50,7 @@ public class RoomInfo : MonoBehaviour
         }
         else if (currentPlayers.Count < maxPlayer)
         {
+            Debug.Log(currentPlayers.Count);
             currentPlayers.Add(player);
             return true;
         }
