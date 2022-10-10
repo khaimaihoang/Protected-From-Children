@@ -6,11 +6,13 @@ using UnityEngine;
 public class ServerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private string _roomName = "GeneralRoom";
+    private string _lobbyName;
 
     // Start is called before the first frame update
     void Start()
     {
         Init();
+
     }
 
     // Update is called once per frame
@@ -22,7 +24,7 @@ public class ServerManager : MonoBehaviourPunCallbacks
     private void Init()
     {
         CreateRoom(_roomName);
-        
+        _lobbyName = "Lobby";
     }
 
     public void CreateRoom(string roomName)
@@ -39,6 +41,12 @@ public class ServerManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         PhotonNetwork.CreateRoom(_roomName);
+        
+    }
+
+    public override void OnJoinedRoom()
+    {
+        //PhotonNetwork.LoadLevel(_lobbyName);
         AddServerComponent();
     }
 
