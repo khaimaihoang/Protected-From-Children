@@ -462,7 +462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2a832c3eca7ef5458d11612e5b7ffe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomName: test
+  roomName: Demo
   lobbyName: Lobby
   _createBtn: {fileID: 0}
   _joinBtn: {fileID: 0}
