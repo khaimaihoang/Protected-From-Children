@@ -1,4 +1,3 @@
- 
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,29 +11,61 @@ public enum PlayerState
     None,
     Ready,
 }
-public class BattleProcess : MonoSingleton<BattleProcess>
+public class BattleProcess : MonoBehaviour
 {
-    public int numOfQuestions = 2;
+    public int numberOfQuestions = 2;
     public int scorePerQuestion = 1;
-
-
-    private Dictionary<int, int> _playerState = new Dictionary<int, int>();
-    [SerializeField] private bool _isPlaying = false;
-    private Dictionary<int, float> _playerAnswerTime = new Dictionary<int, float>();
-    private Dictionary<int, int> _playerScores = new Dictionary<int, int>();
-    public List<int> playerList = new List<int>();
+    private float _timeToWaitPerQuestion = 3f;
     private List<int> _questions = new List<int>();
     private Dictionary<int, string> _answers = new Dictionary<int, string>();
 
-    private float _timeToWaitPerSecond = 3f;
+    [SerializeField] private int _state = (int)RoomState.Waiting;
+
+    public List<int> playerList = new List<int>();
+    private Dictionary<int, float> _playerAnswerTime = new Dictionary<int, float>();
+    private Dictionary<int, int> _playerScores = new Dictionary<int, int>();
+    
+
+
+
     // Start is called before the first frame update
     void Start()
     {
+        Init();
+    }
+
+    public BattleProcess(int numberOfQuestions, int state, List<int>viewId)
+    {
+        this.numberOfQuestions = numberOfQuestions;
+        this._state = state;
+        this.playerList = viewId;
+    }
+
+    private void Init()
+    {
         LoadAnswer();
         GenerateQuestion();
+        if (_state == (int)RoomState.Playing)
+        {
+            StartPlaying();
+        }
+        
+    }
 
-        //Init Client's Battle View
-        //GameObject.Find("BattleRoomManager").GetComponent<WaitingLounge>().Init();
+    private void SetValues(int numberOfQuestions, int state, List<int> viewId)
+    {
+        this.numberOfQuestions = numberOfQuestions;
+        this._state = state;
+        this.playerList = viewId;
+    }
+
+    private void SetState(int state)
+    {
+        this._state = state;
+        if (_state == (int)RoomState.Playing)
+        {
+            StartPlaying();
+        }
     }
 
     private void LoadAnswer()
@@ -50,10 +81,10 @@ public class BattleProcess : MonoSingleton<BattleProcess>
         }
     }
 
-    void GenerateQuestion()
+    private void GenerateQuestion()
     {
         int num = 0;
-        for (int i = 0; i < numOfQuestions; i++)
+        for (int i = 0; i < numberOfQuestions; i++)
         {
             num = UnityEngine.Random.Range(0, _answers.Count);
             while (_questions.Contains(num))
@@ -62,40 +93,6 @@ public class BattleProcess : MonoSingleton<BattleProcess>
             }
             _questions.Add(num);
             Debug.Log(_questions[i]);
-        }
-    }
-
-    public void AddNewPlayer(int viewId)
-    {
-        if (!playerList.Contains(viewId))
-        {
-            playerList.Add(viewId);
-            _playerScores.Add(viewId, 0);
-            _playerState.Add(viewId, (int)PlayerState.None);
-        }
-
-    }
-
-    public void PlayerStateChange(int viewId, int state)
-    {
-        if (!_playerState.ContainsKey(viewId))
-        {
-            _playerState.Add(viewId, state);
-        }
-        else
-        {
-            _playerState[viewId] = state;
-        }
-
-        if (_playerState.Values.Distinct().Skip(1).Any())
-        {
-            if (_playerState.Values.First() == (int)PlayerState.Ready)
-            {
-                _isPlaying = true;
-                Debug.Log("Battle start!");
-                SendQuestions();
-
-            }
         }
     }
 
@@ -117,13 +114,8 @@ public class BattleProcess : MonoSingleton<BattleProcess>
 
     public void SendQuestions()
     {
-        SendReply.Instance.SendQuestions(_questions.ToArray());
-        StartCoroutine(WaitForAnswer(numOfQuestions * _timeToWaitPerSecond));
-    }
-
-    public void StartWaitForReady()
-    {
-        StartCoroutine(WaitForReady(2));
+        SendReply.Instance.SendQuestions(playerList.ToArray(), _questions.ToArray());
+        
     }
 
     IEnumerator WaitForAnswer(float waitTime)
@@ -132,14 +124,9 @@ public class BattleProcess : MonoSingleton<BattleProcess>
         SendReply.Instance.SendScores(_playerScores.Keys.ToArray(), _playerScores.Values.ToArray());
     }
 
-    IEnumerator WaitForReady(float waitTime)
+    private void StartPlaying()
     {
-        yield return new WaitForSeconds(waitTime);
-        if (!_isPlaying) SendReply.Instance.SendReadyState(false);
-    }
-
-    public void ExitGame()
-    {
-        SendReply.Instance.SendExitReply();
+        SendQuestions();
+        StartCoroutine(WaitForAnswer(numberOfQuestions * _timeToWaitPerQuestion));
     }
 }

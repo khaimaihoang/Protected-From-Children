@@ -70,7 +70,8 @@ public class RoomInfo : MonoBehaviour
 
     private void StartProcessing()
     {
-        battleProcess = Instantiate(new BattleProcess(), gameObject.transform);
+        int numberOfQuestions = 5;
+        battleProcess = Instantiate(new BattleProcess(numberOfQuestions, (int)RoomState.Playing, currentPlayers), gameObject.transform);
     }
 
     public void PlayerReady(int viewId)

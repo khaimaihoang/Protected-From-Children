@@ -10,7 +10,7 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
     public List<int> playerList = new List<int>();
     public Dictionary<int, Vector3> clientPosition;
     public Dictionary<int, int> playerInputs = new Dictionary<int, int>();
-    public Dictionary<int, Vector3> playerPositions = new Dictionary<int, Vector3>();
+    [SerializeField] public Dictionary<int, Vector3> playerPositions = new Dictionary<int, Vector3>();
     [SerializeField] private float _moveSpeed = 0.11f;
 
     [SerializeField] private bool _checkWinner = false;
