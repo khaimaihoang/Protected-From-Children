@@ -84,4 +84,18 @@ public class SendRequest : MonoSingleton<SendRequest>
         object content = newUid ;
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestCheckNewUidEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
+
+    public void SendCreateNewRoomRequest(int roomCode, int userId, Minigame minigame = Minigame.Quiz)
+    {
+        object[] content = new object[] { roomCode, userId, (int)minigame };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.CreateNewRoomEventCode, content,
+            new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    }
+
+    public void SendJoinRoomRequest(int roomCode, int userId)
+    {
+        object[] content = new object[] { roomCode, userId };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.JoinRoomEventCode, content,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
 }

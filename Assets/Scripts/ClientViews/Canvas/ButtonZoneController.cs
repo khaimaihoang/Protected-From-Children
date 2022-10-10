@@ -6,47 +6,44 @@ using UnityEngine.UI;
 
 public class ButtonZoneController : MonoBehaviour
 {
-    //private GameObject _canvas;
-    [SerializeField] Text roomNameText;
-    public static string roomName;
-    JoinAnotherRoom _joinAnotherRoom;
+    [SerializeField] private GameObject _canvas;
+    [SerializeField] Text _roomCode;
+    [SerializeField] Button _createRoomBtn;
+    [SerializeField] Button _joinRoomBtn;
 
-    private string _sceneName;
-    private TriggerZoneController _triggerZone;
-
-    private void Init()
+    private void Awake()
     {
-        //_canvas = GameObject.Find("Canvas");
-        _joinAnotherRoom = GetComponent<JoinAnotherRoom>();
-
-        _sceneName = "Loading 1";
-        _triggerZone = null;
+        _canvas = FindObjectOfType<Canvas>().gameObject;
     }
 
-    public void OnCreateRoom()
+    void Init()
     {
-        roomName = roomNameText.text;
-        PlayerPrefs.SetString("roomName", roomName);
-        _joinAnotherRoom.Leave(_sceneName);
+        _roomCode = _canvas.GetComponentInChildren<Text>();
+        Button[] btns = _canvas.GetComponentsInChildren<Button>();
+        foreach (Button btn in btns)
+        {
+            if (btn.gameObject.name == "Create")
+            {
+                _createRoomBtn = btn;
+                _createRoomBtn.onClick.AddListener(OnCreateRoomBtn);
+            }
+            else if (btn.gameObject.name == "Join")
+            {
+                _joinRoomBtn = btn;
+                _joinRoomBtn.onClick.AddListener(OnJoinRoomBtn);
+            }
+        }
     }
 
-    public void OnJoinRoom()
+
+    void OnCreateRoomBtn()
     {
-        roomName = roomNameText.text;
-        PlayerPrefs.SetString("roomName", roomName);
-        _joinAnotherRoom.Leave(_sceneName);
+        SendRequest.Instance.SendCreateNewRoomRequest(int.Parse(_roomCode.text), ClientProcess.Instance.thisPlayerUid);
     }
 
-    public void OnGetSceneName(TriggerZoneController currentTrigger)
+    void OnJoinRoomBtn()
     {
-        _triggerZone = currentTrigger;
-        _sceneName = _triggerZone.sceneName.Length == 0 ? "Loading 1" : _triggerZone.sceneName;
-    }
 
-    public void OnRemoveSceneName()
-    {
-        _triggerZone = null;
-        _sceneName = "Loading 1";
     }
 
     private void OnEnable()
