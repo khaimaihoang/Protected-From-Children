@@ -2,13 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum RoomState: int
+{
+    Waiting,
+        Playing
+}
 public class RoomInfo : MonoBehaviour
 {
-    public int roomId;
-    public List<int> currentPlayers;
-    public int maxPlayer;
-    public Minigame minigame;
-    public BattleProcess battleProcess;
+    public int roomId { get; private set; }
+    public int roomState { get; private set; }
+    public List<int> currentPlayers { get; private set; }
+    public int maxPlayer { get; private set; }
+    public Minigame minigame { get; private set; }
+    public BattleProcess battleProcess { get; private set; }
 
     private List<int> readyingPlayers;
 
@@ -18,6 +24,7 @@ public class RoomInfo : MonoBehaviour
         this.currentPlayers.Add(creatingPlayer);
         this.maxPlayer = maxPlayer;
         this.minigame = minigame;
+        this.roomState = (int)RoomState.Waiting;
     }
 
     public void SetRoomInfo(int roomId, List<int> players, int maxPlayer, Minigame minigame)
@@ -26,11 +33,16 @@ public class RoomInfo : MonoBehaviour
         this.currentPlayers = players;
         this.maxPlayer = maxPlayer;
         this.minigame = minigame;
+        this.roomState = (int)RoomState.Waiting;
     }
 
     public bool AddPlayer(int player)
     {
-        if (currentPlayers.Count < maxPlayer)
+        if (this.roomState == (int)RoomState.Playing)
+        {
+            return false;
+        }
+        else if (currentPlayers.Count < maxPlayer)
         {
             currentPlayers.Add(player);
             return true;
@@ -64,6 +76,7 @@ public class RoomInfo : MonoBehaviour
         if (readyingPlayers.Count == currentPlayers.Count)
         {
             StartProcessing();
+            this.roomState = (int)RoomState.Playing;
         }
     }
 }
