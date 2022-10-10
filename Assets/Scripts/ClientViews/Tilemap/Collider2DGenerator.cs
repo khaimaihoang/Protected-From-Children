@@ -7,7 +7,6 @@ public class Collider2DGenerator : MonoBehaviour
 {
     private List<Tilemap> _tilemaps;
     private GameObject _objectCollidersContainer, _triggerZoneContainer, _mainCanvas;
-    private ButtonZoneController _buttonZone;
     private Dictionary<string, GameObject[]> _envObjList;
     private Quaternion _tilemapRotation;
     private Vector3 _cellSize;
@@ -34,8 +33,7 @@ public class Collider2DGenerator : MonoBehaviour
                 }
             }
         }
-        _mainCanvas = GameObject.Find("Canvas");
-        _buttonZone = GetComponent<ButtonZoneController>();
+        _mainCanvas = FindObjectOfType<Canvas>().gameObject;
         foreach (Tilemap _tilemap in _tilemaps)
         {
             _tilemapRotation = _tilemap.orientationMatrix.rotation;
@@ -90,7 +88,7 @@ public class Collider2DGenerator : MonoBehaviour
                     //Generate Collider
                     SphereCollider sphereCollider = triggerZone.AddComponent<SphereCollider>();
                     TriggerZoneController triggerScript = triggerZone.AddComponent<TriggerZoneController>();
-                    triggerScript.Init(_mainCanvas, _buttonZone);
+                    triggerScript.Init(_mainCanvas);
                     sphereCollider.radius = 1.5f;
                     //sphereCollider.center = tileSprite.bounds.min;
                     sphereCollider.transform.position = new Vector3(spriterPosition.x, 0, spriterPosition.z - sphereCollider.radius * 1.5f);

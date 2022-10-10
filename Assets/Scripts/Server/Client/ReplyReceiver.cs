@@ -78,5 +78,25 @@ public class ReplyReceiver : MonoBehaviour
             int newUid = (int)data;
             ClientProcess.Instance.ChangeUid(newUid);
         }
+        else if (eventCode == (byte)NetworkEvent.GetCreatNewRoomEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int userId = (int)data[0];
+            int minigame = (int)data[1];
+            ClientProcess.Instance.LoadMinigameScene(userId, minigame);
+        }
+        else if (eventCode == (byte)NetworkEvent.GetJoinRoomEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int userId = (int)data[0];
+            int minigame = (int)data[1];
+            if ((Minigame)minigame != Minigame.None)
+            {
+                ClientProcess.Instance.LoadMinigameScene(userId, minigame);
+            } else
+            {
+                Debug.Log("Can't join room");
+            }
+        }
     }
 }

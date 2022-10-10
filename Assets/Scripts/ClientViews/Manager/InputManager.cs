@@ -31,7 +31,11 @@ public enum NetworkEvent : byte
     RequestNewUidEventCode,
     NewUidAcceptedEventCode,
     RequestCheckNewUidEventCode,
-    ChangeNewUidEventCode
+    ChangeNewUidEventCode,
+    CreateNewRoomEventCode,
+    GetCreatNewRoomEventCode,
+    JoinRoomEventCode,
+    GetJoinRoomEventCode
 }
 
 public class InputManager : MonoSingleton<InputManager>
