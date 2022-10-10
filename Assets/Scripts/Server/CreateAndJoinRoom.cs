@@ -31,7 +31,7 @@ public class CreateAndJoinRoom : MonoBehaviourPunCallbacks
             }
         }
         if (roomName == "GeneralRoom"){
-            lobbyName = "Photon_Demo";
+            lobbyName = "Lobby";
         }
     }
 

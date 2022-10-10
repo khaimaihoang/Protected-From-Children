@@ -12,24 +12,9 @@ public class SendRequest : MonoSingleton<SendRequest>
     // Start is called before the first frame update
     public void Init()
     {
-        // playerManager = FindObjectOfType<PlayerManager>();
         thisPlayerUid = ClientProcess.Instance.thisPlayerUid;
         if (PhotonNetwork.CurrentRoom.Name == InputManager.Instance.GeneralRoom) SendPlayerInputRequest((int)PlayerInput.STOP);
-        // StartCoroutine(SendPlayerPositionRequestCoroutine(0.01f));
     }
-
-    // IEnumerator SendPlayerPositionRequestCoroutine(float time){
-    //     while(true){
-    //         SendPlayerPositionRequest();
-    //         yield return new WaitForSeconds(time);
-    //     }
-    // }
-
-    // public void SendPlayerPositionRequest(){
-    //     object[] content = new object[] {thisPlayerUid, playerManager.transform.position};
-    //     RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
-    //     PhotonNetwork.RaiseEvent((byte)NetworkEvent.PositionEventCode, content, raiseEventOptions, SendOptions.SendUnreliable);
-    // }
 
     public void SendPlayerInputRequest(int playerInput)
     {

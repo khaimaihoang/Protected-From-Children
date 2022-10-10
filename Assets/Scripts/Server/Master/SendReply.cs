@@ -61,9 +61,9 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetBattleRequestEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void SendQuestions(int[] questions)
+    public void SendQuestions(int[] viewIds, int[] questions)
     {
-        object[] content = new object[] { questions };
+        object[] content = new object[] { viewIds, questions };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetQuestionsEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
