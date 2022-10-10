@@ -40,12 +40,6 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetClientPositionEventCode, content, raiseEventOptions, SendOptions.SendUnreliable);
     }
 
-    public void SendJoinRoomReply(int userId, Minigame minigame)
-    {
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetJoinRoomEventCode, userId,
-            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
-    }
-
     public void SendReplyChangeNewUid(int newUid)
     {
         object content = newUid;
@@ -105,4 +99,12 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetCreatNewRoomEventCode, content,
             new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
+
+    public void SendJoinRoomReply(int userId, Minigame minigame)
+    {
+        object[] content = new object[] { userId, (int)minigame };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetJoinRoomEventCode, content,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
+
 }

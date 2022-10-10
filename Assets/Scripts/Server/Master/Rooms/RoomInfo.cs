@@ -50,6 +50,7 @@ public class RoomInfo : MonoBehaviour
         }
         else if (currentPlayers.Count < maxPlayer)
         {
+            Debug.Log(currentPlayers.Count);
             currentPlayers.Add(player);
             return true;
         }
