@@ -100,9 +100,9 @@ public class SendReply : MonoSingleton<SendReply>
             new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
 
-    public void SendJoinRoomReply(int userId, Minigame minigame)
+    public void SendJoinRoomReply(int userId, int minigame)
     {
-        object[] content = new object[] { userId, (int)minigame };
+        object[] content = new object[] { userId, minigame };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetJoinRoomEventCode, content,
             new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
