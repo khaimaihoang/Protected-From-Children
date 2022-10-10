@@ -5,7 +5,7 @@ using UnityEngine;
 public class RoomManager : MonoSingleton<RoomManager>
 {
     public Dictionary<int, RoomInfo> roomInfos = new Dictionary<int, RoomInfo>();
-    public Dictionary<int, int> roomOfPlayer;
+    public Dictionary<int, int> roomOfPlayer = new Dictionary<int, int>();
 
     public void CreateMinigameRoom(int roomId, int creatingPlayer, int maxPlayer, Minigame minigame)
     {
@@ -19,9 +19,9 @@ public class RoomManager : MonoSingleton<RoomManager>
 
     public bool JoinMinigameRoom(int roomId, int userId)
     {
-        if (roomInfos[roomId].AddPlayer(viewId))
+        if (roomInfos[roomId].AddPlayer(userId))
         {
-            DictionaryUpdate(roomId, viewId);
+            DictionaryUpdate(roomId, userId);
             return true;
         }
         else
