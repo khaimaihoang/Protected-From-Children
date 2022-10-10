@@ -33,55 +33,55 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
         }
     }
 
-    public void CheckNewUid(int newUid){
+    public void CheckNewUserId(int newUid){
         if (playerList.Contains(newUid))
         {
-            SendReply.Instance.SendReplyChangeNewUid(newUid);
+            SendReply.Instance.SendReplyChangeNewUserId(newUid);
         }
         else
         {
             AddNewPlayer(newUid);
-            SendReply.Instance.SendReplyNewUidAccepted(newUid);
+            SendReply.Instance.SendReplyNewUserIdAccepted(newUid);
         }
     }
 
-    public int AddNewPlayer(int viewId = -1)
+    public int AddNewPlayer(int userId = -1)
     {
-        if (!playerList.Contains(viewId))
+        if (!playerList.Contains(userId))
         {
-            playerList.Add(viewId);
-            playerPositions.Add(viewId, Vector3.zero);
+            playerList.Add(userId);
+            playerPositions.Add(userId, Vector3.zero);
         }
-        return viewId;
+        return userId;
     }
 
-    public void PlayerInputProcess(int viewId, int playerInput)
+    public void PlayerInputProcess(int userId, int playerInput)
     {
 
         if ((PlayerInput)playerInput == PlayerInput.STOP || playerInputs == null)
         {
-            if (playerInputs.ContainsKey(viewId))
+            if (playerInputs.ContainsKey(userId))
             {
-                playerInputs.Remove(viewId);
+                playerInputs.Remove(userId);
             }
             return;
         }
         else
         {
-            if (playerInputs.ContainsKey(viewId))
+            if (playerInputs.ContainsKey(userId))
             {
-                playerInputs[viewId] = playerInput;
+                playerInputs[userId] = playerInput;
             }
             else
             {
-                playerInputs.Add(viewId, playerInput);
+                playerInputs.Add(userId, playerInput);
             }
         }
     }
 
-    public void BattleRequest(int requestViewId, int targetViewId)
+    public void BattleRequest(int requestuserId, int targetuserId)
     {
-        SendReply.Instance.SendBattleNotification(requestViewId, targetViewId);
+        SendReply.Instance.SendBattleNotification(requestuserId, targetuserId);
     }
 
     private void PlayerPositionCalculate()
@@ -116,11 +116,11 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
 
     private void CheckWinner()
     {
-        foreach (int viewId in playerList)
+        foreach (int userId in playerList)
         {
-            if (_goalBound.Contains(playerPositions[viewId]))
+            if (_goalBound.Contains(playerPositions[userId]))
             {
-                SendReply.Instance.SendWinnerReply(viewId);
+                SendReply.Instance.SendWinnerReply(userId);
             }
         }
     }

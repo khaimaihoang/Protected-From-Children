@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour
     private PlayerMovement playerMovement;
     private CameraManager cameraManager;
     private Camera _mainCamera;
-    public int viewId;
+    public int userId;
 
     private bool isHasServer;
 
@@ -21,7 +21,7 @@ public class PlayerManager : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         cameraManager = FindObjectOfType<CameraManager>();
         _mainCamera = FindObjectOfType<Camera>();
-        viewId = 0;
+        userId = 0;
     }
 
     void Start(){
@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     public bool IsMine(){
-        return viewId == ClientProcess.Instance.thisPlayerUid;
+        return userId == ClientProcess.Instance.thisPlayerUid;
     }
 
     // Update is called once per frame

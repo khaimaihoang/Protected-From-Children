@@ -34,11 +34,11 @@ public class BattleProcess : MonoBehaviour
         Init();
     }
 
-    public BattleProcess(int numberOfQuestions, int state, List<int>viewId)
+    public BattleProcess(int numberOfQuestions, int state, List<int>userId)
     {
         this.numberOfQuestions = numberOfQuestions;
         this._state = state;
-        this.playerList = viewId;
+        this.playerList = userId;
     }
 
     private void Init()
@@ -52,11 +52,11 @@ public class BattleProcess : MonoBehaviour
         
     }
 
-    private void SetValues(int numberOfQuestions, int state, List<int> viewId)
+    private void SetValues(int numberOfQuestions, int state, List<int> userId)
     {
         this.numberOfQuestions = numberOfQuestions;
         this._state = state;
-        this.playerList = viewId;
+        this.playerList = userId;
     }
 
     private void SetState(int state)
@@ -96,18 +96,18 @@ public class BattleProcess : MonoBehaviour
         }
     }
 
-    public void AnswerReceived(int viewId, string[] answers)
+    public void AnswerReceived(int userId, string[] answers)
     {
         foreach (string answer in answers)
         {
-            Debug.Log(viewId + " answered: " + answer);
+            Debug.Log(userId + " answered: " + answer);
         }
 
         for (int i = 0; i < _questions.Count; i++)
         {
             if (answers[i] == _answers[_questions[i]])
             {
-                _playerScores[viewId] += scorePerQuestion;
+                _playerScores[userId] += scorePerQuestion;
             }
         }
     }

@@ -23,9 +23,9 @@ public class SendRequest : MonoSingleton<SendRequest>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.InputEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void SendBattleRequest(int targetViewId)
+    public void SendBattleRequest(int targetuserId)
     {
-        object[] content = new object[] { thisPlayerUid, targetViewId };
+        object[] content = new object[] { thisPlayerUid, targetuserId };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.BattleRequestEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
@@ -56,18 +56,18 @@ public class SendRequest : MonoSingleton<SendRequest>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
 
-    //public void SendRequestNewUid()
+    //public void SendRequestnewUserId()
     //{
     //    int tempUid = UnityEngine.Random.RandomRange(0, 10000);
     //    thisPlayerUid = tempUid;
-    //    PlayerPrefs.SetInt("viewId", tempUid);
+    //    PlayerPrefs.SetInt("userId", tempUid);
     //    object content = thisPlayerUid;
-    //    PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestNewUidEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    //    PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestnewUserIdEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     //}
 
-    public void SendRequestCheckNewUid(int newUid){
-        object content = newUid ;
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestCheckNewUidEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    public void SendRequestCheckNewUserId(int newUserId){
+        object content = newUserId ;
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestCheckNewUserIdEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
 
     public void SendCreateNewRoomRequest(int roomCode, int userId, Minigame minigame = Minigame.Quiz)
