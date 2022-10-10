@@ -30,31 +30,31 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         // players = GameObject.FindGameObjectsWithTag("Player");
         // foreach (var player in players)
         // {
-        //     int viewId = player.GetComponent<PlayerManager>().viewId;
-        //     if (!playerPositionFromServer.ContainsKey(viewId)) continue;
-        //     player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[viewId]);
+        //     int userId = player.GetComponent<PlayerManager>().userId;
+        //     if (!playerPositionFromServer.ContainsKey(userId)) continue;
+        //     player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[userId]);
         // }
         foreach(var item in playerPositionFromServer){
-            int viewId = item.Key;
+            int userId = item.Key;
             Vector3 pos = item.Value;
-            if (!players.ContainsKey(viewId)){
-                CreateNewPlayer(viewId);
+            if (!players.ContainsKey(userId)){
+                CreateNewPlayer(userId);
             }
-            GameObject player = players[viewId];
+            GameObject player = players[userId];
             player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
         }
     }
 
-    public void WinnerReceived(int viewId)
+    public void WinnerReceived(int userId)
     {
-        Debug.Log("We got a winner: " + viewId);
+        Debug.Log("We got a winner: " + userId);
     }
 
-    public void BattleRequestReceived(int requestViewId, int targetViewId)
+    public void BattleRequestReceived(int requestuserId, int targetuserId)
     {
-        if (targetViewId == thisPlayerUid)
+        if (targetuserId == thisPlayerUid)
         {
-            Debug.Log(targetViewId + ", you received a battle request from: " + requestViewId);
+            Debug.Log(targetuserId + ", you received a battle request from: " + requestuserId);
         }
     }
 
@@ -67,28 +67,28 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         FindObjectOfType<BattleRoomManager>().RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
     }
 
-    public void ScoresReceived(int[] viewIds, int[] scores)
+    public void ScoresReceived(int[] userIds, int[] scores)
     {
         BattleRoomManager.Instance.RequestOnEndBattle();
-        BattleRoomManager.Instance.RequestOnAnnounceWinner(viewIds, scores);
-        //for (int i = 0; i < viewIds.Length; i++)
+        BattleRoomManager.Instance.RequestOnAnnounceWinner(userIds, scores);
+        //for (int i = 0; i < userIds.Length; i++)
         //{
-        //    //if (PlayerManager.IsMine(viewIds[i]))
+        //    //if (PlayerManager.IsMine(userIds[i]))
         //    //{
         //    //    Debug.Log("My scored: " + scores[i]);
         //    //}
         //    //else
         //    //{
-        //    //    Debug.Log(viewIds[i] + " scored: " + scores[i]);
+        //    //    Debug.Log(userIds[i] + " scored: " + scores[i]);
         //    //}
         //=======================================================================
-        //    //if (PhotonNetwork.GetPhotonView(viewIds[i]).IsMine)
+        //    //if (PhotonNetwork.GetPhotonView(userIds[i]).IsMine)
         //    //{
         //    //    Debug.Log("My scored: " + scores[i]);
         //    //}
         //    //else
         //    //{
-        //    //    Debug.Log(viewIds[i] + " scored: " + scores[i]);
+        //    //    Debug.Log(userIds[i] + " scored: " + scores[i]);
         //    //}
 
         //}
@@ -128,7 +128,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     private void CreatePlayerWithUid(int uid){
         GameObject playerPrefab = Resources.Load<GameObject>("Player");
         GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        newPlayer.GetComponent<PlayerManager>().viewId = uid;
+        newPlayer.GetComponent<PlayerManager>().userId = uid;
         players[uid] = newPlayer;
     }
 
@@ -143,8 +143,8 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     public void GenNewPlayerUid(){
         int newUid = UnityEngine.Random.Range(0, 10);
         thisPlayerUid = newUid;
-        // PlayerPrefs.SetInt("viewId", newUid);
-        SendRequest.Instance.SendRequestCheckNewUid(newUid);
+        // PlayerPrefs.SetInt("userId", newUid);
+        SendRequest.Instance.SendRequestCheckNewUserId(newUid);
     }
 
     public void LoadMinigameScene(int userId, int minigame)

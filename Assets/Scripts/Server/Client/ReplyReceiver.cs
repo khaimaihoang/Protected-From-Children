@@ -24,26 +24,26 @@ public class ReplyReceiver : MonoBehaviour
         if (eventCode == (byte)NetworkEvent.GetClientPositionEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
-            int[] viewIds = (int[]) data[0];
+            int[] userIds = (int[]) data[0];
             Vector3[] poss = (Vector3[]) data[1];
-            for(int i = 0; i < viewIds.Length; i++){
-                ClientProcess.Instance.playerPositionFromServer[viewIds[i]] = poss[i];
-                // Debug.Log(viewIds[i] + " - " + poss[i]);
+            for(int i = 0; i < userIds.Length; i++){
+                ClientProcess.Instance.playerPositionFromServer[userIds[i]] = poss[i];
+                // Debug.Log(userIds[i] + " - " + poss[i]);
             }
             ClientProcess.Instance.UpdatePlayerPosition();
         }
         else if (eventCode == (byte)NetworkEvent.GetWinnerEventCode)
         {
             object data = (object)photonEvent.CustomData;
-            int viewId = (int)data;
-            ClientProcess.Instance.WinnerReceived(viewId);
+            int userId = (int)data;
+            ClientProcess.Instance.WinnerReceived(userId);
         }
         else if(eventCode == (byte)NetworkEvent.GetBattleRequestEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
-            int requestViewId = (int)data[0];
-            int targetViewId = (int)data[1];
-            ClientProcess.Instance.BattleRequestReceived(requestViewId, targetViewId);
+            int requestuserId = (int)data[0];
+            int targetuserId = (int)data[1];
+            ClientProcess.Instance.BattleRequestReceived(requestuserId, targetuserId);
         }
         else if (eventCode == (byte)NetworkEvent.GetQuestionsEventCode)
         {
@@ -54,9 +54,9 @@ public class ReplyReceiver : MonoBehaviour
         else if (eventCode == (byte)NetworkEvent.GetScoresEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
-            int[] viewIds = (int[])data[0];
+            int[] userIds = (int[])data[0];
             int[] scores = (int[])data[1];
-            ClientProcess.Instance.ScoresReceived(viewIds, scores);
+            ClientProcess.Instance.ScoresReceived(userIds, scores);
         } else if (eventCode == (byte)NetworkEvent.GetReadyEventCode)
         {
             Debug.Log("Reply Received");
@@ -67,16 +67,16 @@ public class ReplyReceiver : MonoBehaviour
             Debug.Log("Reply Exit Room");
             ClientProcess.Instance.JoinGeneralRoom();
         }
-        else if (eventCode == (byte)NetworkEvent.NewUidAcceptedEventCode){
+        else if (eventCode == (byte)NetworkEvent.NewUserIdAcceptedEventCode){
             object data = (object)photonEvent.CustomData;
-            int newUid = (int)data;
-            ClientProcess.Instance.CreateNewPlayer(newUid);
+            int newUserId = (int)data;
+            ClientProcess.Instance.CreateNewPlayer(newUserId);
         }
-        else if (eventCode == (byte)NetworkEvent.ChangeNewUidEventCode)
+        else if (eventCode == (byte)NetworkEvent.ChangeNewUserIdEventCode)
         {
             object data = (object)photonEvent.CustomData;
-            int newUid = (int)data;
-            ClientProcess.Instance.ChangeUid(newUid);
+            int newUserId = (int)data;
+            ClientProcess.Instance.ChangeUid(newUserId);
         }
         else if (eventCode == (byte)NetworkEvent.GetCreatNewRoomEventCode)
         {
