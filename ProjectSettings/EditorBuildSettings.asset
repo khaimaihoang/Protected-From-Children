@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: 70d2849ea86a4794c8f41e496e105c00
+  - enabled: 1
+    path: Assets/Scenes/Battle/QuizMinigame.unity
+    guid: 9b350481ad7ed1849b3c59d6b27a22f9
   m_configObjects: {}
