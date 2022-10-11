@@ -22,9 +22,12 @@ public class BattleRoomManager : MonoSingleton<BattleRoomManager>
     {
         this.RequestOnInitBattleRoom();
     }
+
     public void RequestOnInitBattleRoom()
     {
         _waitingLounge.Init();
+        GameObject.Find("Battle Lounge").SetActive(false);
+        GameObject.Find("Result Lounge").SetActive(false);
     }
 
     public void RequestOnStartBattle(int[] questions)

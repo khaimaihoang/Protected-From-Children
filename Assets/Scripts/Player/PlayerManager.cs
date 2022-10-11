@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     public bool IsMine(){
-        return userId == ClientProcess.Instance.thisPlayerUid;
+        return userId == ClientProcess.Instance.playerUserId;
     }
 
     // Update is called once per frame
