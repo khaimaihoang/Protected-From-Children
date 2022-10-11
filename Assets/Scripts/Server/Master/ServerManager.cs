@@ -6,7 +6,6 @@ using UnityEngine;
 public class ServerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private string _roomName = "GeneralRoom";
-    private string _lobbyName;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +23,6 @@ public class ServerManager : MonoBehaviourPunCallbacks
     private void Init()
     {
         CreateRoom(_roomName);
-        _lobbyName = "Lobby";
     }
 
     public void CreateRoom(string roomName)

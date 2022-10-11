@@ -34,13 +34,6 @@ public class BattleProcess : MonoBehaviour
         Init();
     }
 
-    public BattleProcess(int numberOfQuestions, int state, List<int>userId)
-    {
-        this.numberOfQuestions = numberOfQuestions;
-        this._state = state;
-        this.playerList = userId;
-    }
-
     private void Init()
     {
         LoadAnswer();
@@ -52,7 +45,7 @@ public class BattleProcess : MonoBehaviour
         
     }
 
-    private void SetValues(int numberOfQuestions, int state, List<int> userId)
+    public void SetValues(int numberOfQuestions, int state, List<int> userId)
     {
         this.numberOfQuestions = numberOfQuestions;
         this._state = state;
@@ -77,7 +70,7 @@ public class BattleProcess : MonoBehaviour
         {
             answer = lines[i].Split(',');
             _answers.Add(int.Parse(answer[0]), answer[1]);
-            Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])]);
+            // Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])]);
         }
     }
 
@@ -92,7 +85,7 @@ public class BattleProcess : MonoBehaviour
                 num = UnityEngine.Random.Range(0, _answers.Count);
             }
             _questions.Add(num);
-            Debug.Log(_questions[i]);
+            // Debug.Log(_questions[i]);
         }
     }
 
@@ -100,7 +93,7 @@ public class BattleProcess : MonoBehaviour
     {
         foreach (string answer in answers)
         {
-            Debug.Log(userId + " answered: " + answer);
+            // Debug.Log(userId + " answered: " + answer);
         }
 
         for (int i = 0; i < _questions.Count; i++)

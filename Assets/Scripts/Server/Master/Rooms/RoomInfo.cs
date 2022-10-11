@@ -50,7 +50,7 @@ public class RoomInfo : MonoBehaviour
         }
         else if (currentPlayers.Count < maxPlayer)
         {
-            Debug.Log(currentPlayers.Count);
+            //Debug.Log(currentPlayers.Count);
             currentPlayers.Add(player);
             return true;
         }
@@ -71,7 +71,11 @@ public class RoomInfo : MonoBehaviour
     private void StartProcessing()
     {
         int numberOfQuestions = 5;
-        battleProcess = Instantiate(new BattleProcess(numberOfQuestions, (int)RoomState.Playing, currentPlayers), gameObject.transform);
+        GameObject g = new GameObject("RoomInfo");
+        g.transform.SetParent(gameObject.transform);
+        battleProcess = g.AddComponent<BattleProcess>();
+        battleProcess.SetValues(numberOfQuestions, (int)RoomState.Waiting, currentPlayers);
+
     }
 
     public void PlayerReady(int viewId)

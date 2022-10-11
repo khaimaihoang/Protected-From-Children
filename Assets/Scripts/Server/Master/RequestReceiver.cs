@@ -55,6 +55,7 @@ public class RequestReceiver : MonoBehaviour
         {
             object data = (object)photonEvent.CustomData;
             int userId = (int)data;
+            // Debug.Log(userId);
             int playerRoomId = RoomManager.Instance.roomOfPlayer[userId];
             RoomManager.Instance.roomInfos[playerRoomId].PlayerReady(userId);
         }
