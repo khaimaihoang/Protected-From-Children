@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
 using ExitGames.Client.Photon;
+using System;
 
 public class SendRequest : MonoSingleton<SendRequest>
 {
@@ -52,6 +53,12 @@ public class SendRequest : MonoSingleton<SendRequest>
     {
         object[] content = new object[] { roomCode, userId };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.JoinRoomEventCode, content,
-            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+            new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    }
+
+    public void SendPlayerQuitRequest(int userId)
+    {
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.PlayerQuitEventCode, userId,
+            new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
 }
