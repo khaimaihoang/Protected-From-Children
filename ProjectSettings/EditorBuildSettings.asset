@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Loading 2.unity
     guid: 2fa40aeba0b6eb64fba2b88302cf2258
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
     guid: 70d2849ea86a4794c8f41e496e105c00
+  - enabled: 1
+    path: Assets/Scenes/Battle/QuizMinigame.unity
+    guid: 9b350481ad7ed1849b3c59d6b27a22f9
   m_configObjects: {}
