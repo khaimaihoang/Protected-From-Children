@@ -38,13 +38,6 @@ public class ReplyReceiver : MonoBehaviour
             int userId = (int)data;
             ClientProcess.Instance.WinnerReceived(userId);
         }
-        else if(eventCode == (byte)NetworkEvent.GetBattleRequestEventCode)
-        {
-            object[] data = (object[])photonEvent.CustomData;
-            int requestuserId = (int)data[0];
-            int targetuserId = (int)data[1];
-            ClientProcess.Instance.BattleRequestReceived(requestuserId, targetuserId);
-        }
         else if (eventCode == (byte)NetworkEvent.GetQuestionsEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
@@ -57,15 +50,6 @@ public class ReplyReceiver : MonoBehaviour
             int[] userIds = (int[])data[0];
             int[] scores = (int[])data[1];
             ClientProcess.Instance.ScoresReceived(userIds, scores);
-        } else if (eventCode == (byte)NetworkEvent.GetReadyEventCode)
-        {
-            Debug.Log("Reply Received");
-            bool data = (bool)photonEvent.CustomData;
-            ClientProcess.Instance.ReadyStateReceived(data);
-        } else if (eventCode == (byte)NetworkEvent.ExitEventCode)
-        {
-            Debug.Log("Reply Exit Room");
-            ClientProcess.Instance.JoinGeneralRoom();
         }
         else if (eventCode == (byte)NetworkEvent.NewUserIdAcceptedEventCode){
             object data = (object)photonEvent.CustomData;
