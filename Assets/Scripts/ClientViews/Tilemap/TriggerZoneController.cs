@@ -14,7 +14,7 @@ public class TriggerZoneController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.transform.tag == "Player")
+        if(other.transform.tag == "Player" && other.transform.GetComponent<PlayerManager>().IsMine())
         {
             Debug.Log("Enter Trigger Zone!");
             canvasObject.SetActive(true);
@@ -23,7 +23,7 @@ public class TriggerZoneController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.transform.tag == "Player")
+        if (other.transform.tag == "Player" && other.transform.GetComponent<PlayerManager>().IsMine())
         {
             Debug.Log("Exit Trigger Zone!");
             canvasObject.SetActive(false);
