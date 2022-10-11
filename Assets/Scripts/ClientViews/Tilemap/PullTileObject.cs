@@ -25,8 +25,8 @@ public class PullTileObject : MonoBehaviour
         _tilemaps = new List<Tilemap>();
         _mainCamera = GameObject.FindObjectOfType<Camera>();
         // _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        _playerTransform = ClientProcess.Instance.players[ClientProcess.Instance.playerUserId].transform;
         _colliderScript = GetComponent<Collider2DGenerator>();
+        _playerTransform = ClientProcess.Instance.GetThisPlayerGameObject().transform;
 
         GameObject _mainGrid = GameObject.Find("MainGrid");
         if (_mainGrid != null)
