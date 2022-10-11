@@ -43,6 +43,7 @@ public class WaitingLounge : MonoBehaviour
     {
         Debug.Log("Player is ready");
         //Send request ready
+        Debug.Log(_isReady);
         _isReady = !_isReady;
         this.OnViewReadyBattleClicked();
     }
@@ -67,7 +68,7 @@ public class WaitingLounge : MonoBehaviour
     #region View
     private void OnViewReadyBattleClicked()
     {
-        if (!_isReady) //not ready
+        if (_isReady)
         {
             _readyText.text = "Cancel";
             _numberText.text = (_numberText.text[0] - '0' + 1) + "/2";
