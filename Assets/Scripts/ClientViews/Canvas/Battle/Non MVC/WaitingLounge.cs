@@ -43,8 +43,8 @@ public class WaitingLounge : MonoBehaviour
     {
         Debug.Log("Player is ready");
         //Send request ready
-        Debug.Log(_isReady);
         _isReady = !_isReady;
+
         this.OnViewReadyBattleClicked();
     }
 
