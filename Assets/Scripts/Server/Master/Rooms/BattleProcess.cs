@@ -34,13 +34,6 @@ public class BattleProcess : MonoBehaviour
         Init();
     }
 
-    public BattleProcess(int numberOfQuestions, int state, List<int>userId)
-    {
-        this.numberOfQuestions = numberOfQuestions;
-        this._state = state;
-        this.playerList = userId;
-    }
-
     private void Init()
     {
         LoadAnswer();
@@ -52,7 +45,7 @@ public class BattleProcess : MonoBehaviour
         
     }
 
-    private void SetValues(int numberOfQuestions, int state, List<int> userId)
+    public void SetValues(int numberOfQuestions, int state, List<int> userId)
     {
         this.numberOfQuestions = numberOfQuestions;
         this._state = state;
