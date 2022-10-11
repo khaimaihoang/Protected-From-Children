@@ -74,7 +74,7 @@ public class RoomInfo : MonoBehaviour
         GameObject g = new GameObject("RoomInfo");
         g.transform.SetParent(gameObject.transform);
         battleProcess = g.AddComponent<BattleProcess>();
-        battleProcess.SetValues(numberOfQuestions, (int)RoomState.Waiting, currentPlayers);
+        battleProcess.SetValues(numberOfQuestions, (int)RoomState.Playing, currentPlayers);
 
     }
 
@@ -85,7 +85,7 @@ public class RoomInfo : MonoBehaviour
             readyingPlayers.Add(viewId);
         }
 
-        if (readyingPlayers.Count == currentPlayers.Count)
+        if (readyingPlayers.Count == maxPlayer)
         {
             StartProcessing();
             this.roomState = (int)RoomState.Playing;

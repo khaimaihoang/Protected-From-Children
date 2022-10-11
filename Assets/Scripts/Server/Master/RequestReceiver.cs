@@ -55,7 +55,7 @@ public class RequestReceiver : MonoBehaviour
         {
             object data = (object)photonEvent.CustomData;
             int userId = (int)data;
-            Debug.Log(userId);
+            // Debug.Log(userId);
             int playerRoomId = RoomManager.Instance.roomOfPlayer[userId];
             RoomManager.Instance.roomInfos[playerRoomId].PlayerReady(userId);
         }
@@ -87,6 +87,13 @@ public class RequestReceiver : MonoBehaviour
             {
                 SendReply.Instance.SendJoinRoomReply(userId, (int)Minigame.None);
             }
+        }
+        else if (eventCode == (byte)NetworkEvent.PlayerQuitEventCode)
+        {
+            int userId = (int)photonEvent.CustomData;
+            if (RoomManager.Instance.IsPlayerInRoom(userId))
+                RoomManager.Instance.QuitMinigameRoom(RoomManager.Instance.roomOfPlayer[userId], userId);
+            NetworkProcess.Instance.RemovePlayer(userId);
         }
     }
 }

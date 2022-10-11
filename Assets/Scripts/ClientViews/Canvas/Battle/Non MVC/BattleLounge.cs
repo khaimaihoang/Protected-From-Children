@@ -96,7 +96,14 @@ public class BattleLounge : MonoBehaviour
 
     private void OnControllerRenewQuestion()
     {
-        this.OnViewRenewQuestion(_questForms[_questionIds[currentIdx]]);
+        foreach(var item in _questForms)
+        {
+            if(item.id == _questionIds[currentIdx])
+            {
+                this.OnViewRenewQuestion(item);
+                break;
+            }
+        }
         currentIdx++;
 
         _currentTimer = timerPerQuestion;
