@@ -14,6 +14,7 @@ public class ClientLobby : MonoBehaviour
     void OnEnable()
     {
         ClientProcess.Instance.onUpdatePlayerPosition += UpdatePlayerPosition;
+        ClientProcess.Instance.onChangeUserId += ChangeUserId;
         ClientProcess.Instance.onGenNewPlayerUserId += GenNewPlayeruserId;
         ClientProcess.Instance.onCreateNewPlayer += CreateNewPlayer;
         ClientProcess.Instance.onGetPlayerGameObjectWithId += GetPlayerGameObjectWithId;
@@ -23,6 +24,7 @@ public class ClientLobby : MonoBehaviour
     void OnDisable()
     {
         ClientProcess.Instance.onUpdatePlayerPosition -= UpdatePlayerPosition;
+        ClientProcess.Instance.onChangeUserId -= ChangeUserId;
         ClientProcess.Instance.onGenNewPlayerUserId -= GenNewPlayeruserId;
         ClientProcess.Instance.onCreateNewPlayer -= CreateNewPlayer;
         ClientProcess.Instance.onGetPlayerGameObjectWithId -= GetPlayerGameObjectWithId;
@@ -38,7 +40,7 @@ public class ClientLobby : MonoBehaviour
             Vector3 pos = item.Value;
             if (!players.ContainsKey(userId))
             {
-                CreateNewPlayer(userId);
+                CreatePlayerWithUserId(userId);
             }
             GameObject player = players[userId];
             player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
@@ -46,14 +48,13 @@ public class ClientLobby : MonoBehaviour
     }
 
     public void CreateNewPlayer(int newUserId){
+        if (ClientProcess.Instance.playerUserId != newUserId) return;
         CreatePlayerWithUserId(newUserId);
-        if (ClientProcess.Instance.playerUserId == newUserId){ // ClientProcess of new player
-            ClientProcess.Instance._isAuthentizated = true;
-            ClientsViewController.Instance.RequestOnInitPlayerViews();
-            ClientsViewController.Instance.RequestOnStopToPull(false);
-            InitCamera();
-            SendRequest.Instance.Init();
-        }
+        ClientProcess.Instance._isAuthentizated = true;
+        ClientsViewController.Instance.RequestOnInitPlayerViews();
+        ClientsViewController.Instance.RequestOnStopToPull(false);
+        InitCamera();
+        SendRequest.Instance.Init();
     }
 
     private void InitCamera(){
