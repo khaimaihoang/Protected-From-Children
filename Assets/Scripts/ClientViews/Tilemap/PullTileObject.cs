@@ -19,15 +19,6 @@ public class PullTileObject : MonoBehaviour
     public int radius, outside, viewRadius;
 
     private Collider2DGenerator _colliderScript;
-    private void Awake()
-    {
-        
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     private void Init()
     {
