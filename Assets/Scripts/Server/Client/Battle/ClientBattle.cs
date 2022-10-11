@@ -21,6 +21,11 @@ public class ClientBattle : MonoBehaviour
         BattleRoomManager.Instance.RequestOnAnnounceWinner(userIds, scores);
     }
 
+    public void SendReadyState()
+    {
+
+    }
+
     private void OnEnable()
     {
         ClientProcess.Instance.onQuestionsReceived += QuestionsReceived;
