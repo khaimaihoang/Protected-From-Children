@@ -82,5 +82,10 @@ public class ReplyReceiver : MonoBehaviour
                 Debug.Log("Can't join room");
             }
         }
+        else if (eventCode == (byte)NetworkEvent.GetQuitEventCode)
+        {
+            Debug.Log("Quit 3");
+            ClientProcess.Instance.DestroyPlayerObject((int)photonEvent.CustomData);
+        }
     }
 }

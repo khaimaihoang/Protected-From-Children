@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
-
     public Dictionary<int, Vector3> playerPositionFromServer;
     public Dictionary<int, GameObject> players;
     bool _isAuthentizated = false;
@@ -99,6 +98,21 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         playerUserId = newUserId;
         // PlayerPrefs.SetInt("userId", newUserId);
         SendRequest.Instance.SendRequestCheckNewUserId(newUserId);
+    }
+
+    public void DestroyPlayerObject(int userId)
+    {
+        Debug.Log("Destroying");
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject playerObject in players)
+        {
+            if (playerObject.GetComponent<PlayerManager>().userId == ClientProcess.Instance.playerUserId)
+            {
+                Debug.Log("Quit game");
+                PhotonNetwork.Destroy(playerObject);
+                break;
+            }
+        }
     }
 
     public void LoadMinigameScene(int userId, int minigame)

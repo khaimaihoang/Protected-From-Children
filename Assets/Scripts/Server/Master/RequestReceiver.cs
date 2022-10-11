@@ -88,5 +88,12 @@ public class RequestReceiver : MonoBehaviour
                 SendReply.Instance.SendJoinRoomReply(userId, (int)Minigame.None);
             }
         }
+        else if (eventCode == (byte)NetworkEvent.PlayerQuitEventCode)
+        {
+            int userId = (int)photonEvent.CustomData;
+            if (RoomManager.Instance.IsPlayerInRoom(userId))
+                RoomManager.Instance.QuitMinigameRoom(RoomManager.Instance.roomOfPlayer[userId], userId);
+            NetworkProcess.Instance.RemovePlayer(userId);
+        }
     }
 }

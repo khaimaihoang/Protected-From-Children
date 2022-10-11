@@ -79,6 +79,12 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
         }
     }
 
+    public void RemovePlayer(int userId)
+    {
+        this.playerList.Remove(userId);
+        SendReply.Instance.SendQuitReply(userId);
+    }
+
     public void BattleRequest(int requestuserId, int targetuserId)
     {
         SendReply.Instance.SendBattleNotification(requestuserId, targetuserId);
