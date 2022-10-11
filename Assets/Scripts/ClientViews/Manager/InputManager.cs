@@ -58,7 +58,7 @@ public class InputManager : MonoSingleton<InputManager>
         //Debug.Log(verticalInput + " " + horizontalInput);
 
         cameraProjection = Input.GetAxisRaw("Jump");
-        mouseScroll = Input.mouseScrollDelta.y;
+        mouseScroll = -Input.mouseScrollDelta.y;
         SendInput();
     }
     public void HandleAllInput(){

@@ -14,25 +14,19 @@ public class PullTileObject : MonoBehaviour
     // List<Vector3Int> _standingTiles;
     // List<Vector3Int> _nearbyTiles;
     private float _rotateSpeed = 10;
-    private bool _stopToPull = true;
+    private bool _stopToPull = true, _justZoomMap = false;
 
-    public int radius, outside;
-    private void Awake()
-    {
-        
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int radius, outside, viewRadius;
+
+    private Collider2DGenerator _colliderScript;
 
     private void Init()
     {
         _tilemaps = new List<Tilemap>();
         _mainCamera = GameObject.FindObjectOfType<Camera>();
         // _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        _playerTransform = ClientProcess.Instance.players[ClientProcess.Instance.playerUserId].transform;
+        _colliderScript = GetComponent<Collider2DGenerator>();
+        _playerTransform = ClientProcess.Instance.GetThisPlayerGameObject().transform;
 
         GameObject _mainGrid = GameObject.Find("MainGrid");
         if (_mainGrid != null)
@@ -68,20 +62,26 @@ public class PullTileObject : MonoBehaviour
         {
             if (_playerTransform.GetComponent<PlayerManager>().IsMine())
             {
-                GetCellsByRadiusAndOutside(radius, outside);
+                if (Camera.main.orthographic)
+                {
+                    viewRadius = radius * Mathf.FloorToInt(Camera.main.orthographicSize) / 5;
+                    _justZoomMap = true;
+                    if (InputManager.Instance.mouseScroll < 0 && viewRadius > radius)
+                    {
+                        this.ResetAllTilemaps();
+                    }
+                }
+                else
+                {
+                    viewRadius = radius;
+                    if (_justZoomMap)
+                    {
+                        this.ResetAllTilemaps();
+                        _justZoomMap = false;
+                    }
+                }
+                GetCellsByRadiusAndOutside(viewRadius, outside);
             }
-        }
-    }
-
-    private void OnChangeTile(Vector3Int location, Tilemap _tilemap, bool flag)
-    {
-        if (flag)
-        {
-            this.PullUp(location, _tilemap);
-        }
-        else
-        {
-            this.FoldDown(location, _tilemap);
         }
     }
 
@@ -96,15 +96,24 @@ public class PullTileObject : MonoBehaviour
             {
                 for (int y = -radius - outside; y <= radius + outside; y++)
                 {
-                    
-         
-                    if ((Mathf.Abs(x) <= radius) && (Mathf.Abs(y) <= radius))
+                    Vector3Int location = new Vector3Int(baseLocation.x + x, baseLocation.y + y, baseLocation.z);
+                    //TilemapController.Instance.RequestOnChangeTile(new Vector2Int(x, y), new Vector2Int(this.radius, radius), new Vector3Int(baseLocation.x + x, baseLocation.y + y, baseLocation.z), _tilemap);
+                    if (Mathf.Abs(x) <= radius && Mathf.Abs(y) <= radius)
                     {
-                        TilemapController.Instance.RequestOnChangeTile(new Vector3Int(baseLocation.x + x, baseLocation.y + y, baseLocation.z), _tilemap, true);
+                        this.PullUp(location, _tilemap);
                     }
                     else
                     {
-                        TilemapController.Instance.RequestOnChangeTile(new Vector3Int(baseLocation.x + x, baseLocation.y + y, baseLocation.z), _tilemap, false);
+                        this.FoldDown(location, _tilemap);
+                    }
+
+                    if (Mathf.Abs(x) <= this.radius && Mathf.Abs(y) <= this.radius)
+                    {
+                        _colliderScript.GenerateColliderInRadius(location, _tilemap);
+                    }
+                    else
+                    {
+                        _colliderScript.DestroyColliderOutRadius(location, _tilemap);
                     }
                 }
             }
@@ -160,18 +169,6 @@ public class PullTileObject : MonoBehaviour
 
     private void SetTransparency(Vector3Int location, float ratio, Tilemap _tilemap, bool flag)
     {
-        //Player behind Tile Objects
-        //if(flag == true && _tilemap.name == "Standing Objects" && ratio > 0.5f)
-        //{
-        //    Sprite sprite = _tilemap.GetSprite(location);
-        //    float value = sprite.bounds.size.y / Mathf.Cos(_tilemap.GetTransformMatrix(location).rotation.eulerAngles.x);
-        //    Vector3 spritePos = _tilemap.CellToWorld(location);
-            
-        //    if (_playerTransform.position.z - spritePos.z > 0 && _playerTransform.position.z - spritePos.z < value * 0.75f && Mathf.Abs(_playerTransform.position.x - spritePos.x) < sprite.bounds.size.x * 0.75f)
-        //    {
-        //        ratio = Mathf.Abs((_playerTransform.position - spritePos).sqrMagnitude) * 0.05f / ratio;
-        //    }
-        //}
         //Set Transparency
         Color color = _tilemap.GetColor(location);
         color.a = ratio;
@@ -188,14 +185,14 @@ public class PullTileObject : MonoBehaviour
     private void OnDisable()
     {
         ClientsViewController.Instance.OnInitPlayerViews -= Init;
-        TilemapController.Instance.OnChangeTile -= OnChangeTile;
+        //TilemapController.Instance.OnChangeTile -= OnChangeTile;
         ClientsViewController.Instance.OnStopToPull -= OnStopToPull;
     }
 
     public void OnEnable()
     {
         ClientsViewController.Instance.OnInitPlayerViews += Init;
-        TilemapController.Instance.OnChangeTile += OnChangeTile;
+        //TilemapController.Instance.OnChangeTile += OnChangeTile;
         ClientsViewController.Instance.OnStopToPull += OnStopToPull;
     }
 }

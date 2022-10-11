@@ -5,99 +5,70 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
-    public Dictionary<int, Vector3> playerPositionFromServer;
-    public Dictionary<int, GameObject> players;
-    bool _isAuthentizated = false;
-    bool _hasPlayerView = true;
+    public UnityAction< Dictionary<int, Vector3>> onUpdatePlayerPosition;
+    public UnityAction onGenNewPlayerUserId;
+    public UnityAction<int> onChangeUserId;
+    public UnityAction<int> onCreateNewPlayer;
+    public Func<int, GameObject> onGetPlayerGameObjectWithId;
+    public UnityAction<int> onWinnerReceived;
+    public UnityAction<int[]> onQuestionsReceived;
+    public UnityAction<int[], int[]> onScoresReceived;
+
     public int playerUserId;
+    public bool _isAuthentizated = false;
     void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
-        playerPositionFromServer = new Dictionary<int, Vector3>();
-        players = new Dictionary<int, GameObject>();
-        GenNewPlayeruserId();
+        // playerPositionFromServer = new Dictionary<int, Vector3>();
     }
 
-    public void UpdatePlayerPosition()
+    void Start(){
+        GenNewPlayerUserId();
+    }
+
+    public void UpdatePlayerPosition(int []userIds, Vector3[] poss)
     {
-        // players = GameObject.FindGameObjectsWithTag("Player");
-        // foreach (var player in players)
-        // {
-        //     int userId = player.GetComponent<PlayerManager>().userId;
-        //     if (!playerPositionFromServer.ContainsKey(userId)) continue;
-        //     player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[userId]);
-        // }
-        if (_hasPlayerView)
-        {
-            foreach (var item in playerPositionFromServer)
-            {
-                int userId = item.Key;
-                Vector3 pos = item.Value;
-                if (!players.ContainsKey(userId))
-                {
-                    CreateNewPlayer(userId);
-                }
-                GameObject player = players[userId];
-                player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
-            }
+        Dictionary<int, Vector3> playerPositionFromServer = new Dictionary<int, Vector3>();
+        for(int i = 0; i < userIds.Length; i++){
+            playerPositionFromServer[userIds[i]] = poss[i];
         }
-
+        onUpdatePlayerPosition?.Invoke(playerPositionFromServer);
     }
 
-    public void WinnerReceived(int userId)
-    {
-        Debug.Log("We got a winner: " + userId);
+    public void GenNewPlayerUserId(){
+        onGenNewPlayerUserId?.Invoke();
     }
 
-    public void QuestionsReceived(int[] questions)
-    {
-        FindObjectOfType<BattleRoomManager>().RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
-    }
-
-    public void ScoresReceived(int[] userIds, int[] scores)
-    {
-        BattleRoomManager.Instance.RequestOnEndBattle();
-        BattleRoomManager.Instance.RequestOnAnnounceWinner(userIds, scores);
+    public void ChangeUserId(int newUserId){
+        onChangeUserId?.Invoke(newUserId);
     }
 
     public void CreateNewPlayer(int newUserId){
-        CreatePlayerWithUserId(newUserId);
-        if (playerUserId == newUserId){ // ClientProcess of new player
-            _isAuthentizated = true;
-            ClientsViewController.Instance.RequestOnInitPlayerViews();
-            ClientsViewController.Instance.RequestOnStopToPull(false);
-            InitCamera();
-            SendRequest.Instance.Init();
-        }
+        onCreateNewPlayer?.Invoke(newUserId);
     }
 
-    private void InitCamera(){
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowPlayer>().followTarget = players[playerUserId].transform;
+    public GameObject GetThisPlayerGameObject(){
+        return GetPlayerGameObjectWithId(playerUserId);
     }
 
-    private void CreatePlayerWithUserId(int userId){
-        GameObject playerPrefab = Resources.Load<GameObject>("Player");
-        GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        newPlayer.GetComponent<PlayerManager>().userId = userId;
-        players[userId] = newPlayer;
+    public GameObject GetPlayerGameObjectWithId(int userId){
+        return onGetPlayerGameObjectWithId?.Invoke(userId);
     }
 
-    public void ChangeUserId(int newUserId)
-    {
-        if (playerUserId == newUserId && !_isAuthentizated)
-        {
-            GenNewPlayeruserId();
-        }
+    public void WinnerReceived(int userId){
+        onWinnerReceived?.Invoke(userId);
     }
 
-    public void GenNewPlayeruserId(){
-        int newUserId = UnityEngine.Random.Range(0, 10);
-        playerUserId = newUserId;
-        // PlayerPrefs.SetInt("userId", newUserId);
-        SendRequest.Instance.SendRequestCheckNewUserId(newUserId);
+    public void QuestionsReceived(int[] questions){
+        onQuestionsReceived?.Invoke(questions);
+    }
+
+    public void ScoresReceived(int[] userIds, int[] scores){
+        onScoresReceived?.Invoke(userIds, scores);
     }
 
     public void DestroyPlayerObject(int userId)
@@ -117,7 +88,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void LoadMinigameScene(int userId, int minigame)
     {
-        if (playerUserId == userId)
+        if (ClientProcess.Instance.playerUserId == userId)
         {
             SceneManager.LoadScene((Minigame)minigame + "Minigame");
         }

@@ -26,11 +26,8 @@ public class ReplyReceiver : MonoBehaviour
             object[] data = (object[])photonEvent.CustomData;
             int[] userIds = (int[]) data[0];
             Vector3[] poss = (Vector3[]) data[1];
-            for(int i = 0; i < userIds.Length; i++){
-                ClientProcess.Instance.playerPositionFromServer[userIds[i]] = poss[i];
-                // Debug.Log(userIds[i] + " - " + poss[i]);
-            }
-            ClientProcess.Instance.UpdatePlayerPosition();
+            
+            ClientProcess.Instance.UpdatePlayerPosition(userIds, poss);
         }
         else if (eventCode == (byte)NetworkEvent.GetWinnerEventCode)
         {

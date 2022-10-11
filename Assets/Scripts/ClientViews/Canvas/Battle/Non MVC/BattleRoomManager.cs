@@ -26,8 +26,8 @@ public class BattleRoomManager : MonoSingleton<BattleRoomManager>
     public void RequestOnInitBattleRoom()
     {
         _waitingLounge.Init();
-        GameObject.Find("Battle Lounge").SetActive(false);
-        GameObject.Find("Result Lounge").SetActive(false);
+        //GameObject.Find("Battle Lounge").SetActive(false);
+        //GameObject.Find("Result Lounge").SetActive(false);
     }
 
     public void RequestOnStartBattle(int[] questions)

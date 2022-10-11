@@ -10,7 +10,7 @@ public class WaitingLounge : MonoBehaviour
 
     private List<GameObject> _playerList;
     private GameObject _battleLounge, _waitingLounge, _resultLounge;
-
+    private bool _isReady;
     public void Init()
     {
         _readyButton = GameObject.Find("Ready Button").GetComponent<Button>();
@@ -20,15 +20,22 @@ public class WaitingLounge : MonoBehaviour
         _numberText = GameObject.Find("Number Text").GetComponent<Text>();
 
         _playerList = new List<GameObject>(2);
-
-
-        //foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
-        //{
-        //    _playerList.Add(player);
-        //}
+        foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            _playerList.Add(player);
+        }
 
         _readyButton.onClick.AddListener(OnControllerReadyBattleClicked);
         _leaveButton.onClick.AddListener(OnControllerLeaveRoomClicked);
+
+        _battleLounge = GameObject.Find("Battle Lounge");
+        _waitingLounge = GameObject.Find("Waiting Lounge");
+        _resultLounge = GameObject.Find("Result Lounge");
+
+        _battleLounge.SetActive(false);
+        _resultLounge.SetActive(false);
+
+        _isReady = false;
     }
 
     #region Controller
@@ -36,6 +43,8 @@ public class WaitingLounge : MonoBehaviour
     {
         Debug.Log("Player is ready");
         //Send request ready
+        _isReady = !_isReady;
+
         this.OnViewReadyBattleClicked();
     }
 
@@ -59,17 +68,17 @@ public class WaitingLounge : MonoBehaviour
     #region View
     private void OnViewReadyBattleClicked()
     {
-        if (_readyText.text == "Ready") //not ready
+        if (_isReady)
         {
-            SendRequest.Instance.SendPlayerReadyRequest();
             _readyText.text = "Cancel";
             _numberText.text = (_numberText.text[0] - '0' + 1) + "/2";
         }
-        //else
-        //{
-        //    _readyText.text = "Ready";
-        //    _numberText.text = (_numberText.text[0] - '0' - 1) + "/2";
-        //} 
+        else
+        {
+            _readyText.text = "Ready";
+            _numberText.text = (_numberText.text[0] - '0' - 1) + "/2";
+        }
+
     }
     #endregion
 

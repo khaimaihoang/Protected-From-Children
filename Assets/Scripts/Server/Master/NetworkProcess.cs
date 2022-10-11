@@ -16,7 +16,6 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
     [SerializeField] private bool _checkWinner = false;
     [SerializeField] private Vector3 _goalCenter= Vector3.zero;
     [SerializeField] private Vector3 _goalSize = Vector3.one;
-    [SerializeField] private int minUid = 1, maxUid = 9999;
     private Bounds _goalBound;
 
     void Awake(){
