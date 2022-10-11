@@ -77,10 +77,10 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject playerObject in players)
         {
-            if (playerObject.GetComponent<PlayerManager>().userId == ClientProcess.Instance.playerUserId)
+            if (playerObject.GetComponent<PlayerManager>().userId == userId)
             {
                 Debug.Log("Quit game");
-                PhotonNetwork.Destroy(playerObject);
+                Destroy(playerObject);
                 break;
             }
         }
