@@ -38,12 +38,12 @@ public class ButtonZoneController : MonoBehaviour
 
     void OnCreateRoomBtn()
     {
-        SendRequest.Instance.SendCreateNewRoomRequest(int.Parse(_roomCode.text), ClientProcess.Instance.thisPlayerUid);
+        SendRequest.Instance.SendCreateNewRoomRequest(int.Parse(_roomCode.text), ClientProcess.Instance.playerUserId);
     }
 
     void OnJoinRoomBtn()
     {
-        SendRequest.Instance.SendJoinRoomRequest(int.Parse(_roomCode.text), ClientProcess.Instance.thisPlayerUid);
+        SendRequest.Instance.SendJoinRoomRequest(int.Parse(_roomCode.text), ClientProcess.Instance.playerUserId);
     }
 
     private void OnEnable()

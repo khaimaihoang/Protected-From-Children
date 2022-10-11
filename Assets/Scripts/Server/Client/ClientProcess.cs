@@ -12,12 +12,12 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     public Dictionary<int, GameObject> players;
     JoinAnotherRoom _joinAnotherRoom;
     bool _isAuthentizated = false;
-    public int thisPlayerUid;
+    public int playerUserId;
     void Awake()
     {
         playerPositionFromServer = new Dictionary<int, Vector3>();
         players = new Dictionary<int, GameObject>();
-        GenNewPlayerUid();
+        GenNewPlayeruserId();
     }
 
     void Start(){
@@ -52,7 +52,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void BattleRequestReceived(int requestuserId, int targetuserId)
     {
-        if (targetuserId == thisPlayerUid)
+        if (targetuserId == playerUserId)
         {
             Debug.Log(targetuserId + ", you received a battle request from: " + requestuserId);
         }
@@ -60,10 +60,6 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void QuestionsReceived(int[] questions)
     {
-        //foreach (int question in questions)
-        //{
-        //    Debug.Log("Question: " + question);
-        //}
         FindObjectOfType<BattleRoomManager>().RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
     }
 
@@ -71,36 +67,17 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     {
         BattleRoomManager.Instance.RequestOnEndBattle();
         BattleRoomManager.Instance.RequestOnAnnounceWinner(userIds, scores);
-        //for (int i = 0; i < userIds.Length; i++)
-        //{
-        //    //if (PlayerManager.IsMine(userIds[i]))
-        //    //{
-        //    //    Debug.Log("My scored: " + scores[i]);
-        //    //}
-        //    //else
-        //    //{
-        //    //    Debug.Log(userIds[i] + " scored: " + scores[i]);
-        //    //}
-        //=======================================================================
-        //    //if (PhotonNetwork.GetPhotonView(userIds[i]).IsMine)
-        //    //{
-        //    //    Debug.Log("My scored: " + scores[i]);
-        //    //}
-        //    //else
-        //    //{
-        //    //    Debug.Log(userIds[i] + " scored: " + scores[i]);
-        //    //}
-
-        //}
     }
 
-    public void ReadyStateReceived(bool allReady)
+    public void ReadyStateReceived(bool isReady)
     {
-        if (!allReady)
+        if (!isReady)
         {
             Debug.Log("Someone is not ready!");
-            PlayerPrefs.SetString("roomName", InputManager.Instance.GeneralRoom);
-            PhotonNetwork.LoadLevel("Photon_Demo");
+        }
+        else if (isReady)
+        {
+            Debug.Log("All ready!");
         }
     }
 
@@ -110,9 +87,9 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         _joinAnotherRoom.Leave("Photon_Demo");
     }
 
-    public void CreateNewPlayer(int newUid){
-        CreatePlayerWithUid(newUid);
-        if (thisPlayerUid == newUid){ // ClientProcess of new player
+    public void CreateNewPlayer(int newUserId){
+        CreatePlayerWithUserId(newUserId);
+        if (playerUserId == newUserId){ // ClientProcess of new player
             _isAuthentizated = true;
             ClientsViewController.Instance.RequestOnInitPlayerViews();
             ClientsViewController.Instance.RequestOnStopToPull(false);
@@ -122,34 +99,34 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     }
 
     private void InitCamera(){
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowPlayer>().followTarget = players[thisPlayerUid].transform;
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowPlayer>().followTarget = players[playerUserId].transform;
     }
 
-    private void CreatePlayerWithUid(int uid){
+    private void CreatePlayerWithUserId(int userId){
         GameObject playerPrefab = Resources.Load<GameObject>("Player");
         GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        newPlayer.GetComponent<PlayerManager>().userId = uid;
-        players[uid] = newPlayer;
+        newPlayer.GetComponent<PlayerManager>().userId = userId;
+        players[userId] = newPlayer;
     }
 
-    public void ChangeUid(int newUid)
+    public void ChangeUserId(int newUserId)
     {
-        if (thisPlayerUid == newUid && !_isAuthentizated)
+        if (playerUserId == newUserId && !_isAuthentizated)
         {
-            GenNewPlayerUid();
+            GenNewPlayeruserId();
         }
     }
 
-    public void GenNewPlayerUid(){
-        int newUid = UnityEngine.Random.Range(0, 10);
-        thisPlayerUid = newUid;
-        // PlayerPrefs.SetInt("userId", newUid);
-        SendRequest.Instance.SendRequestCheckNewUserId(newUid);
+    public void GenNewPlayeruserId(){
+        int newUserId = UnityEngine.Random.Range(0, 10);
+        playerUserId = newUserId;
+        // PlayerPrefs.SetInt("userId", newUserId);
+        SendRequest.Instance.SendRequestCheckNewUserId(newUserId);
     }
 
     public void LoadMinigameScene(int userId, int minigame)
     {
-        if (thisPlayerUid == userId)
+        if (playerUserId == userId)
         {
             SceneManager.LoadScene((Minigame)minigame + "Minigame");
         }

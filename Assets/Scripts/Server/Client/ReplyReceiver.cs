@@ -76,7 +76,7 @@ public class ReplyReceiver : MonoBehaviour
         {
             object data = (object)photonEvent.CustomData;
             int newUserId = (int)data;
-            ClientProcess.Instance.ChangeUid(newUserId);
+            ClientProcess.Instance.ChangeUserId(newUserId);
         }
         else if (eventCode == (byte)NetworkEvent.GetCreatNewRoomEventCode)
         {

@@ -58,21 +58,4 @@ public class JoinAnotherRoom : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(this.level);
     }
 
-    public override void OnMasterClientSwitched(Player newMasterClient)
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameObject master = Resources.Load<GameObject>("Master");
-            Instantiate(master);
-            GameObject battle = Resources.Load<GameObject>("BattleProcess");
-            Instantiate(battle);
-        }
-        SendRequest.Instance.SendExitRequest();
-    }
-
-    public void OnExitButton()
-    {
-        SendRequest.Instance.SendExitRequest();
-    }
-
 }

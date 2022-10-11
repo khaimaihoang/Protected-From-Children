@@ -13,6 +13,7 @@ public class RoomManager : MonoSingleton<RoomManager>
         g.transform.SetParent(gameObject.transform);
         RoomInfo newRoomInfo = g.AddComponent<RoomInfo>();
         newRoomInfo.SetRoomInfo(roomId, creatingPlayer, maxPlayer, minigame);
+        SendReply.Instance.SendCreateNewRoomReply(creatingPlayer, (int)minigame);
         DictionaryUpdate(roomId, newRoomInfo, creatingPlayer);
     }
 
@@ -27,7 +28,6 @@ public class RoomManager : MonoSingleton<RoomManager>
         {
             return false;
         }
-        
     }
 
     public void QuitMinigameRoom(int roomId, int viewId)

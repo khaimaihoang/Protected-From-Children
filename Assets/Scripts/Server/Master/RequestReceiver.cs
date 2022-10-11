@@ -26,59 +26,39 @@ public class RequestReceiver : MonoBehaviour
         if (eventCode == (byte)NetworkEvent.PositionEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
-            int viewId = (int)data[0];
+            int userId = (int)data[0];
             Vector3 pos = (Vector3)data[1];
-            NetworkProcess.Instance.clientPosition[viewId] = pos;
+            NetworkProcess.Instance.clientPosition[userId] = pos;
         }
         else if (eventCode == (byte)NetworkEvent.InputEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
-            int viewId = (int)data[0];
+            int userId = (int)data[0];
             int input = (int)data[1];
-            NetworkProcess.Instance.AddNewPlayer(viewId);
-            NetworkProcess.Instance.playerInputs[viewId] = input;
+            NetworkProcess.Instance.AddNewPlayer(userId);
+            NetworkProcess.Instance.playerInputs[userId] = input;
         }
-        else if (eventCode == (byte)NetworkEvent.BattleRequestEventCode)
-        {
-            object[] data = (object[])photonEvent.CustomData;
-            int requestViewId = (int)data[0];
-            int targetViewId = (int)data[1];
-            if (PhotonNetwork.GetPhotonView(targetViewId) == null)
-            {
-                return;
-            }
-            NetworkProcess.Instance.BattleRequest(requestViewId, targetViewId);
-        }
+
         else if (eventCode == (byte)NetworkEvent.AnswerEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
-            int viewId = (int)data[0];
+            int userId = (int)data[0];
             string[] answers = (string[])data[1];
-            if (PhotonNetwork.GetPhotonView(viewId) == null)
+            if (PhotonNetwork.GetPhotonView(userId) == null)
             {
                 return;
             }
-            // BattleProcess.Instance.AnswerReceived(viewId, answers);
+            int playerRoomId = RoomManager.Instance.roomOfPlayer[userId];
+            RoomManager.Instance.roomInfos[playerRoomId].battleProcess.AnswerReceived(userId, answers);
         }
-        else if (eventCode == (byte)NetworkEvent.StateChangeEventCode)
+        else if (eventCode == (byte)NetworkEvent.PlayerReadyEventCode)
         {
-            object[] data = (object[])photonEvent.CustomData;
-            int viewId = (int)data[0];
-            int state = (int)data[1];
-            if (PhotonNetwork.GetPhotonView(viewId) == null)
-            {
-                return;
-            }
-            // BattleProcess.Instance.PlayerStateChange(viewId, state);
-        } else if (eventCode == (byte)NetworkEvent.AllInRoomEventCode)
-        {
-            Debug.Log("Request Received");
-            // BattleProcess.Instance.StartWaitForReady();
-        } else if (eventCode == (byte)NetworkEvent.ExitEventCode)
-        {
-            Debug.Log("Request exit received");
-            // BattleProcess.Instance.ExitGame();
+            object data = (object)photonEvent.CustomData;
+            int userId = (int)data;
+            int playerRoomId = RoomManager.Instance.roomOfPlayer[userId];
+            RoomManager.Instance.roomInfos[playerRoomId].PlayerReady(userId);
         }
+
         else if (eventCode == (byte)NetworkEvent.RequestCheckNewUserIdEventCode)
         {
             object data = (object)photonEvent.CustomData;
@@ -101,7 +81,8 @@ public class RequestReceiver : MonoBehaviour
             if (RoomManager.Instance.JoinMinigameRoom(roomCode, userId))
             {
                 SendReply.Instance.SendJoinRoomReply(userId, (int)RoomManager.Instance.roomInfos[roomCode].minigame);
-            } else
+            }
+            else
             {
                 SendReply.Instance.SendJoinRoomReply(userId, (int)Minigame.None);
             }
