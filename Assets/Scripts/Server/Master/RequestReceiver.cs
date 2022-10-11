@@ -58,7 +58,7 @@ public class RequestReceiver : MonoBehaviour
             {
                 return;
             }
-            BattleProcess.Instance.AnswerReceived(viewId, answers);
+            // BattleProcess.Instance.AnswerReceived(viewId, answers);
         }
         else if (eventCode == (byte)NetworkEvent.StateChangeEventCode)
         {
@@ -69,15 +69,42 @@ public class RequestReceiver : MonoBehaviour
             {
                 return;
             }
-            BattleProcess.Instance.PlayerStateChange(viewId, state);
+            // BattleProcess.Instance.PlayerStateChange(viewId, state);
         } else if (eventCode == (byte)NetworkEvent.AllInRoomEventCode)
         {
             Debug.Log("Request Received");
-            BattleProcess.Instance.StartWaitForReady();
+            // BattleProcess.Instance.StartWaitForReady();
         } else if (eventCode == (byte)NetworkEvent.ExitEventCode)
         {
             Debug.Log("Request exit received");
-            BattleProcess.Instance.ExitGame();
+            // BattleProcess.Instance.ExitGame();
+        }
+        else if (eventCode == (byte)NetworkEvent.RequestCheckNewUserIdEventCode)
+        {
+            object data = (object)photonEvent.CustomData;
+            int newUserId = (int)data;
+            NetworkProcess.Instance.CheckNewUserId(newUserId);
+        }
+        else if (eventCode == (byte)NetworkEvent.CreateNewRoomEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int roomCode = (int)data[0];
+            int userId = (int)data[1];
+            int minigame = (int)data[2];
+            RoomManager.Instance.CreateMinigameRoom(roomCode, userId, 2, (Minigame)minigame);
+        }
+        else if (eventCode == (byte)NetworkEvent.JoinRoomEventCode)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+            int roomCode = (int)data[0];
+            int userId = (int)data[1];
+            if (RoomManager.Instance.JoinMinigameRoom(roomCode, userId))
+            {
+                SendReply.Instance.SendJoinRoomReply(userId, (int)RoomManager.Instance.roomInfos[roomCode].minigame);
+            } else
+            {
+                SendReply.Instance.SendJoinRoomReply(userId, (int)Minigame.None);
+            }
         }
     }
 }

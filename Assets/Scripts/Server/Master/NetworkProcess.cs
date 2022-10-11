@@ -10,12 +10,13 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
     public List<int> playerList = new List<int>();
     public Dictionary<int, Vector3> clientPosition;
     public Dictionary<int, int> playerInputs = new Dictionary<int, int>();
-    public Dictionary<int, Vector3> playerPositions = new Dictionary<int, Vector3>();
+    [SerializeField] public Dictionary<int, Vector3> playerPositions = new Dictionary<int, Vector3>();
     [SerializeField] private float _moveSpeed = 0.11f;
 
     [SerializeField] private bool _checkWinner = false;
     [SerializeField] private Vector3 _goalCenter= Vector3.zero;
     [SerializeField] private Vector3 _goalSize = Vector3.one;
+    [SerializeField] private int minUid = 1, maxUid = 9999;
     private Bounds _goalBound;
 
     void Awake(){
@@ -32,43 +33,55 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
         }
     }
 
-    public void AddNewPlayer(int viewId)
-    {
-        if (!playerList.Contains(viewId))
+    public void CheckNewUserId(int newUid){
+        if (playerList.Contains(newUid))
         {
-            playerList.Add(viewId);
-            playerPositions.Add(viewId, Vector3.zero);
+            SendReply.Instance.SendReplyChangeNewUserId(newUid);
         }
-        
+        else
+        {
+            AddNewPlayer(newUid);
+            SendReply.Instance.SendReplyNewUserIdAccepted(newUid);
+        }
     }
 
-    public void PlayerInputProcess(int viewId, int playerInput)
+    public int AddNewPlayer(int userId = -1)
+    {
+        if (!playerList.Contains(userId))
+        {
+            playerList.Add(userId);
+            playerPositions.Add(userId, Vector3.zero);
+        }
+        return userId;
+    }
+
+    public void PlayerInputProcess(int userId, int playerInput)
     {
 
         if ((PlayerInput)playerInput == PlayerInput.STOP || playerInputs == null)
         {
-            if (playerInputs.ContainsKey(viewId))
+            if (playerInputs.ContainsKey(userId))
             {
-                playerInputs.Remove(viewId);
+                playerInputs.Remove(userId);
             }
             return;
         }
         else
         {
-            if (playerInputs.ContainsKey(viewId))
+            if (playerInputs.ContainsKey(userId))
             {
-                playerInputs[viewId] = playerInput;
+                playerInputs[userId] = playerInput;
             }
             else
             {
-                playerInputs.Add(viewId, playerInput);
+                playerInputs.Add(userId, playerInput);
             }
         }
     }
 
-    public void BattleRequest(int requestViewId, int targetViewId)
+    public void BattleRequest(int requestuserId, int targetuserId)
     {
-        SendReply.Instance.SendBattleNotification(requestViewId, targetViewId);
+        SendReply.Instance.SendBattleNotification(requestuserId, targetuserId);
     }
 
     private void PlayerPositionCalculate()
@@ -103,11 +116,11 @@ public class NetworkProcess : MonoSingleton<NetworkProcess>
 
     private void CheckWinner()
     {
-        foreach (int viewId in playerList)
+        foreach (int userId in playerList)
         {
-            if (_goalBound.Contains(playerPositions[viewId]))
+            if (_goalBound.Contains(playerPositions[userId]))
             {
-                SendReply.Instance.SendWinnerReply(viewId);
+                SendReply.Instance.SendWinnerReply(userId);
             }
         }
     }

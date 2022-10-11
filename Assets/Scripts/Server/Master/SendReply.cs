@@ -27,43 +27,50 @@ public class SendReply : MonoSingleton<SendReply>
 
     private void SendClientPositionReply()
     {
-        List<int> viewIds = new List<int>();
+        List<int> userIds = new List<int>();
         List<Vector3> poss = new List<Vector3>();
         foreach (var item in NetworkProcess.Instance.playerPositions)
         {
-            viewIds.Add(item.Key);
+            userIds.Add(item.Key);
             poss.Add(item.Value);
         }
-        if (viewIds.Count == 0) return;
-        object[] content = new object[] { viewIds.ToArray(), poss.ToArray() };
+        if (userIds.Count == 0) return;
+        object[] content = new object[] { userIds.ToArray(), poss.ToArray() };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetClientPositionEventCode, content, raiseEventOptions, SendOptions.SendUnreliable);
     }
 
-    public void SendWinnerReply(int viewId)
+    public void SendReplyChangeNewUserId(int newUserId)
     {
-        object content = viewId;
+        object content = newUserId;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.ChangeNewUserIdEventCode, content, raiseEventOptions, SendOptions.SendReliable);
+    }
+
+    public void SendWinnerReply(int userId)
+    {
+        object content = userId;
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetWinnerEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void SendBattleNotification(int requestViewId, int targetViewId)
+    public void SendBattleNotification(int requestuserId, int targetuserId)
     {
-        object[] content = new object[] { requestViewId, targetViewId };
+        object[] content = new object[] { requestuserId, targetuserId };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetBattleRequestEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void SendQuestions(int[] questions)
+    public void SendQuestions(int[] userIds, int[] questions)
     {
-        object[] content = new object[] { questions };
+        object[] content = new object[] { userIds, questions };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetQuestionsEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void SendScores(int[] viewIds, int[] scores)
+    public void SendScores(int[] userIds, int[] scores)
     {
-        object[] content = new object[] { viewIds, scores };
+        object[] content = new object[] { userIds, scores };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetScoresEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
@@ -79,4 +86,25 @@ public class SendReply : MonoSingleton<SendReply>
     {
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
+
+    public void SendReplyNewUserIdAccepted(int newUserId){
+        object content = newUserId;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.NewUserIdAcceptedEventCode, content, raiseEventOptions, SendOptions.SendReliable);
+    }
+
+    public void SendCreateNewRoomReply(int userId, int minigame)
+    {
+        object[] content = new object[] { userId, minigame };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetCreatNewRoomEventCode, content,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
+
+    public void SendJoinRoomReply(int userId, int minigame)
+    {
+        object[] content = new object[] { userId, minigame };
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetJoinRoomEventCode, content,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
+
 }

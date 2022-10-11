@@ -10,8 +10,7 @@ public class PlayerManager : MonoBehaviour
     private PlayerMovement playerMovement;
     private CameraManager cameraManager;
     private Camera _mainCamera;
-    private PhotonView photonView;
-    public int viewId;
+    public int userId;
 
     private bool isHasServer;
 
@@ -22,24 +21,27 @@ public class PlayerManager : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         cameraManager = FindObjectOfType<CameraManager>();
         _mainCamera = FindObjectOfType<Camera>();
-        photonView = GetComponent<PhotonView>();
-        viewId = photonView.ViewID;
+        userId = 0;
     }
 
     void Start(){
         isHasServer = FindObjectOfType<NetworkProcess>() ? true : false;
     }
 
+    public bool IsMine(){
+        return userId == ClientProcess.Instance.thisPlayerUid;
+    }
+
     // Update is called once per frame
     void Update(){
-        if (photonView.IsMine)
+        if (IsMine())
         {
             InputManager.Instance.HandleAllInput();
         }
     }
     void FixedUpdate()
     {
-        if (photonView.IsMine){
+        if (IsMine()){
             // if (!isHasServer)
             // {
             //     playerMovement.HandleMovementFromInput();

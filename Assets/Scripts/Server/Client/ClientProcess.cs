@@ -4,47 +4,57 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using UnityEngine.SceneManagement;
 
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
     public Dictionary<int, Vector3> playerPositionFromServer;
-    private GameObject[] players;
-    private PlayerManager playerManager;
+    public Dictionary<int, GameObject> players;
     JoinAnotherRoom _joinAnotherRoom;
-
-    // private PlayerManager playerManager;
+    bool _isAuthentizated = false;
+    public int thisPlayerUid;
     void Awake()
     {
         playerPositionFromServer = new Dictionary<int, Vector3>();
+        players = new Dictionary<int, GameObject>();
+        GenNewPlayerUid();
     }
 
     void Start(){
-        playerManager = FindObjectOfType<PlayerManager>();
+        // playerManager = FindObjectOfType<PlayerManager>();
         _joinAnotherRoom = FindObjectOfType<JoinAnotherRoom>();
     }
 
     public void UpdatePlayerPosition()
     {
-        players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var player in players)
-        {
-            PhotonView photonView = player.GetComponent<PhotonView>();
-            int viewId = photonView.ViewID;
-            if (!playerPositionFromServer.ContainsKey(viewId)) continue;
-            player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[viewId]);
+        // players = GameObject.FindGameObjectsWithTag("Player");
+        // foreach (var player in players)
+        // {
+        //     int userId = player.GetComponent<PlayerManager>().userId;
+        //     if (!playerPositionFromServer.ContainsKey(userId)) continue;
+        //     player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[userId]);
+        // }
+        foreach(var item in playerPositionFromServer){
+            int userId = item.Key;
+            Vector3 pos = item.Value;
+            if (!players.ContainsKey(userId)){
+                CreateNewPlayer(userId);
+            }
+            GameObject player = players[userId];
+            player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
         }
     }
 
-    public void WinnerReceived(int viewId)
+    public void WinnerReceived(int userId)
     {
-        Debug.Log("We got a winner: " + viewId);
+        Debug.Log("We got a winner: " + userId);
     }
 
-    public void BattleRequestReceived(int requestViewId, int targetViewId)
+    public void BattleRequestReceived(int requestuserId, int targetuserId)
     {
-        if (targetViewId == playerManager.viewId)
+        if (targetuserId == thisPlayerUid)
         {
-            Debug.Log(targetViewId + ", you received a battle request from: " + requestViewId);
+            Debug.Log(targetuserId + ", you received a battle request from: " + requestuserId);
         }
     }
 
@@ -57,28 +67,28 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         FindObjectOfType<BattleRoomManager>().RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
     }
 
-    public void ScoresReceived(int[] viewIds, int[] scores)
+    public void ScoresReceived(int[] userIds, int[] scores)
     {
         BattleRoomManager.Instance.RequestOnEndBattle();
-        BattleRoomManager.Instance.RequestOnAnnounceWinner(viewIds, scores);
-        //for (int i = 0; i < viewIds.Length; i++)
+        BattleRoomManager.Instance.RequestOnAnnounceWinner(userIds, scores);
+        //for (int i = 0; i < userIds.Length; i++)
         //{
-        //    //if (PlayerManager.IsMine(viewIds[i]))
+        //    //if (PlayerManager.IsMine(userIds[i]))
         //    //{
         //    //    Debug.Log("My scored: " + scores[i]);
         //    //}
         //    //else
         //    //{
-        //    //    Debug.Log(viewIds[i] + " scored: " + scores[i]);
+        //    //    Debug.Log(userIds[i] + " scored: " + scores[i]);
         //    //}
         //=======================================================================
-        //    //if (PhotonNetwork.GetPhotonView(viewIds[i]).IsMine)
+        //    //if (PhotonNetwork.GetPhotonView(userIds[i]).IsMine)
         //    //{
         //    //    Debug.Log("My scored: " + scores[i]);
         //    //}
         //    //else
         //    //{
-        //    //    Debug.Log(viewIds[i] + " scored: " + scores[i]);
+        //    //    Debug.Log(userIds[i] + " scored: " + scores[i]);
         //    //}
 
         //}
@@ -98,5 +108,50 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     {
         PlayerPrefs.SetString("roomName", InputManager.Instance.GeneralRoom);
         _joinAnotherRoom.Leave("Photon_Demo");
+    }
+
+    public void CreateNewPlayer(int newUid){
+        CreatePlayerWithUid(newUid);
+        if (thisPlayerUid == newUid){ // ClientProcess of new player
+            _isAuthentizated = true;
+            ClientsViewController.Instance.RequestOnInitPlayerViews();
+            ClientsViewController.Instance.RequestOnStopToPull(false);
+            InitCamera();
+            SendRequest.Instance.Init();
+        }
+    }
+
+    private void InitCamera(){
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<FollowPlayer>().followTarget = players[thisPlayerUid].transform;
+    }
+
+    private void CreatePlayerWithUid(int uid){
+        GameObject playerPrefab = Resources.Load<GameObject>("Player");
+        GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        newPlayer.GetComponent<PlayerManager>().userId = uid;
+        players[uid] = newPlayer;
+    }
+
+    public void ChangeUid(int newUid)
+    {
+        if (thisPlayerUid == newUid && !_isAuthentizated)
+        {
+            GenNewPlayerUid();
+        }
+    }
+
+    public void GenNewPlayerUid(){
+        int newUid = UnityEngine.Random.Range(0, 10);
+        thisPlayerUid = newUid;
+        // PlayerPrefs.SetInt("userId", newUid);
+        SendRequest.Instance.SendRequestCheckNewUserId(newUid);
+    }
+
+    public void LoadMinigameScene(int userId, int minigame)
+    {
+        if (thisPlayerUid == userId)
+        {
+            SceneManager.LoadScene((Minigame)minigame + "Minigame");
+        }
     }
 }

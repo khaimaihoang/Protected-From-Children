@@ -18,7 +18,6 @@ public class CreateAndJoinRoom : MonoBehaviourPunCallbacks
 
     private void Init()
     {
-        PlayerPrefs.SetString("roomName", "");
         foreach(Button btn in FindObjectsOfType<Button>())
         {
             if (btn.gameObject.name == "CreateRoom")
@@ -32,7 +31,7 @@ public class CreateAndJoinRoom : MonoBehaviourPunCallbacks
             }
         }
         if (roomName == "GeneralRoom"){
-            lobbyName = "Photon_Demo";
+            lobbyName = "Lobby";
         }
     }
 

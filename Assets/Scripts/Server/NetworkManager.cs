@@ -14,7 +14,7 @@ public class NetworkManager : MonoBehaviour
             Instantiate(master);
         }
         else{
-            GameObject client = Resources.Load<GameObject>("TestPrefabs/ClientManager");
+            GameObject client = Resources.Load<GameObject>("ClientManager");
             Instantiate(client);
         }
     }
