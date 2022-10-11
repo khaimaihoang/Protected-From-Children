@@ -23,7 +23,7 @@ public enum NetworkEvent : byte
     GetBattleRequestEventCode,
     GetQuestionsEventCode,
     AnswerEventCode,
-    StateChangeEventCode,
+    PlayerReadyEventCode,
     GetScoresEventCode,
     GetReadyEventCode,
     AllInRoomEventCode,

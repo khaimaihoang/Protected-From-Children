@@ -75,9 +75,9 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetScoresEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void SendReadyState(bool _allReady)
+    public void SendReadyState(bool isReady)
     {
-        object content = _allReady;
+        object content = isReady;
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetReadyEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
