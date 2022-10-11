@@ -8,13 +8,16 @@ using UnityEngine.SceneManagement;
 
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
+
     public Dictionary<int, Vector3> playerPositionFromServer;
     public Dictionary<int, GameObject> players;
     JoinAnotherRoom _joinAnotherRoom;
     bool _isAuthentizated = false;
+    bool _hasPlayerView = true;
     public int playerUserId;
     void Awake()
     {
+        DontDestroyOnLoad(this.gameObject);
         playerPositionFromServer = new Dictionary<int, Vector3>();
         players = new Dictionary<int, GameObject>();
         GenNewPlayeruserId();
@@ -34,15 +37,21 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         //     if (!playerPositionFromServer.ContainsKey(userId)) continue;
         //     player.GetComponent<PlayerMovement>().HandleMovementToPosition(playerPositionFromServer[userId]);
         // }
-        foreach(var item in playerPositionFromServer){
-            int userId = item.Key;
-            Vector3 pos = item.Value;
-            if (!players.ContainsKey(userId)){
-                CreateNewPlayer(userId);
+        if (_hasPlayerView)
+        {
+            foreach (var item in playerPositionFromServer)
+            {
+                int userId = item.Key;
+                Vector3 pos = item.Value;
+                if (!players.ContainsKey(userId))
+                {
+                    CreateNewPlayer(userId);
+                }
+                GameObject player = players[userId];
+                player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
             }
-            GameObject player = players[userId];
-            player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
         }
+
     }
 
     public void WinnerReceived(int userId)

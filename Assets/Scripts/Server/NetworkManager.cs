@@ -16,6 +16,8 @@ public class NetworkManager : MonoBehaviour
         else{
             GameObject client = Resources.Load<GameObject>("ClientManager");
             Instantiate(client);
+            client = Resources.Load<GameObject>("ClientNetwork");
+            Instantiate(client);
         }
     }
 
