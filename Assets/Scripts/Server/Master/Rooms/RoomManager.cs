@@ -17,6 +17,11 @@ public class RoomManager : MonoSingleton<RoomManager>
         DictionaryUpdate(roomId, newRoomInfo, creatingPlayer);
     }
 
+    public bool IsPlayerInRoom(int userId)
+    {
+        if (roomOfPlayer.ContainsKey(userId)) return true; else return false;
+    }
+
     public bool JoinMinigameRoom(int roomId, int userId)
     {
         if (roomInfos[roomId].AddPlayer(userId))
