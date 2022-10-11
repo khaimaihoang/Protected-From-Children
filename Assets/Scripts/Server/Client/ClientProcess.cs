@@ -60,7 +60,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void QuestionsReceived(int[] questions)
     {
-        FindObjectOfType<BattleRoomManager>().RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
+        BattleRoomManager.Instance.RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
     }
 
     public void ScoresReceived(int[] userIds, int[] scores)

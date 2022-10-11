@@ -43,17 +43,6 @@ public class Collider2DGenerator : MonoBehaviour
 
         _mainCanvas.SetActive(false);
     }
-    private void OnChangeTile(Vector3Int location, Tilemap _tilemap, bool flag)
-    {
-        if (flag)
-        {
-            this.GenerateColliderInRadius(location, _tilemap);
-        }
-        else
-        {
-            this.DestroyColliderOutRadius(location, _tilemap);
-        }
-    }
 
     private void GenEnvObjContainer(Tilemap _tilemap){
         bool isInteractable = false;
@@ -105,7 +94,7 @@ public class Collider2DGenerator : MonoBehaviour
         }
     }
 
-    private void GenerateColliderInRadius(Vector3Int location, Tilemap _tilemap)
+    public void GenerateColliderInRadius(Vector3Int location, Tilemap _tilemap)
     {
         if (!_tilemaps.Contains(_tilemap))
         {
@@ -126,7 +115,7 @@ public class Collider2DGenerator : MonoBehaviour
 
     }
 
-    private void DestroyColliderOutRadius(Vector3Int location, Tilemap _tilemap)
+    public void DestroyColliderOutRadius(Vector3Int location, Tilemap _tilemap)
     {
         if (!_tilemaps.Contains(_tilemap))
         {
@@ -150,13 +139,13 @@ public class Collider2DGenerator : MonoBehaviour
     private void OnDisable()
     {
         ClientsViewController.Instance.OnInitPlayerViews -= Init;
-        TilemapController.Instance.OnChangeTile -= OnChangeTile;
+        //TilemapController.Instance.OnChangeTile -= OnChangeTile;
     }
 
     private void OnEnable()
     {
         ClientsViewController.Instance.OnInitPlayerViews += Init;
-        TilemapController.Instance.OnChangeTile += OnChangeTile;
+        //TilemapController.Instance.OnChangeTile += OnChangeTile;
     }
 
 }
