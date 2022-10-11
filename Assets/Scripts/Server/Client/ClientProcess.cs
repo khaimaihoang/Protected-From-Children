@@ -11,7 +11,6 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public Dictionary<int, Vector3> playerPositionFromServer;
     public Dictionary<int, GameObject> players;
-    JoinAnotherRoom _joinAnotherRoom;
     bool _isAuthentizated = false;
     bool _hasPlayerView = true;
     public int playerUserId;
@@ -21,11 +20,6 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         playerPositionFromServer = new Dictionary<int, Vector3>();
         players = new Dictionary<int, GameObject>();
         GenNewPlayeruserId();
-    }
-
-    void Start(){
-        // playerManager = FindObjectOfType<PlayerManager>();
-        _joinAnotherRoom = FindObjectOfType<JoinAnotherRoom>();
     }
 
     public void UpdatePlayerPosition()
@@ -59,14 +53,6 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         Debug.Log("We got a winner: " + userId);
     }
 
-    public void BattleRequestReceived(int requestuserId, int targetuserId)
-    {
-        if (targetuserId == playerUserId)
-        {
-            Debug.Log(targetuserId + ", you received a battle request from: " + requestuserId);
-        }
-    }
-
     public void QuestionsReceived(int[] questions)
     {
         BattleRoomManager.Instance.RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
@@ -76,24 +62,6 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     {
         BattleRoomManager.Instance.RequestOnEndBattle();
         BattleRoomManager.Instance.RequestOnAnnounceWinner(userIds, scores);
-    }
-
-    public void ReadyStateReceived(bool isReady)
-    {
-        if (!isReady)
-        {
-            Debug.Log("Someone is not ready!");
-        }
-        else if (isReady)
-        {
-            Debug.Log("All ready!");
-        }
-    }
-
-    public void JoinGeneralRoom()
-    {
-        PlayerPrefs.SetString("roomName", InputManager.Instance.GeneralRoom);
-        _joinAnotherRoom.Leave("Photon_Demo");
     }
 
     public void CreateNewPlayer(int newUserId){
