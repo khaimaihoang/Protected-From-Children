@@ -12,7 +12,7 @@ public class ClientBattle : MonoBehaviour
 
     public void QuestionsReceived(int[] questions)
     {
-        FindObjectOfType<BattleRoomManager>().RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
+        BattleRoomManager.Instance.RequestOnStartBattle(questions); //FindObjectOfType vs Instance ???
     }
 
     public void ScoresReceived(int[] userIds, int[] scores)
@@ -21,5 +21,15 @@ public class ClientBattle : MonoBehaviour
         BattleRoomManager.Instance.RequestOnAnnounceWinner(userIds, scores);
     }
 
-    
+    private void OnEnable()
+    {
+        ClientProcess.Instance.onQuestionsReceived += QuestionsReceived;
+        ClientProcess.Instance.onScoresReceived += ScoresReceived;
+    }
+
+    private void OnDisable()
+    {
+        ClientProcess.Instance.onQuestionsReceived -= QuestionsReceived;
+        ClientProcess.Instance.onScoresReceived -= ScoresReceived;
+    }
 }
