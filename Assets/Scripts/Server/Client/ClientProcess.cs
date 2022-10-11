@@ -71,6 +71,21 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         onScoresReceived?.Invoke(userIds, scores);
     }
 
+    public void DestroyPlayerObject(int userId)
+    {
+        Debug.Log("Destroying");
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject playerObject in players)
+        {
+            if (playerObject.GetComponent<PlayerManager>().userId == ClientProcess.Instance.playerUserId)
+            {
+                Debug.Log("Quit game");
+                PhotonNetwork.Destroy(playerObject);
+                break;
+            }
+        }
+    }
+
     public void LoadMinigameScene(int userId, int minigame)
     {
         if (ClientProcess.Instance.playerUserId == userId)

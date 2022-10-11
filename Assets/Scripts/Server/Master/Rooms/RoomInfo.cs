@@ -85,7 +85,7 @@ public class RoomInfo : MonoBehaviour
             readyingPlayers.Add(viewId);
         }
 
-        if (readyingPlayers.Count == currentPlayers.Count)
+        if (readyingPlayers.Count == maxPlayer)
         {
             StartProcessing();
             this.roomState = (int)RoomState.Playing;

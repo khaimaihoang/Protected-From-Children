@@ -61,6 +61,14 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetBattleRequestEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
+    public void SendQuitReply(int userId)
+    {
+        Debug.Log("Quit game");
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetQuitEventCode, userId,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+        Debug.Log("Quit 2");
+    }
+
     public void SendQuestions(int[] userIds, int[] questions)
     {
         object[] content = new object[] { userIds, questions };
@@ -73,18 +81,6 @@ public class SendReply : MonoSingleton<SendReply>
         object[] content = new object[] { userIds, scores };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetScoresEventCode, content, raiseEventOptions, SendOptions.SendReliable);
-    }
-
-    public void SendReadyState(bool isReady)
-    {
-        object content = isReady;
-        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetReadyEventCode, content, raiseEventOptions, SendOptions.SendReliable);
-    }
-
-    public void SendExitReply()
-    {
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.ExitEventCode, "", new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
 
     public void SendReplyNewUserIdAccepted(int newUserId){
