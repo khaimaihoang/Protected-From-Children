@@ -61,14 +61,6 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetBattleRequestEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
-    public void SendQuitReply(int userId)
-    {
-        Debug.Log("Quit game");
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetQuitEventCode, userId,
-            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
-        Debug.Log("Quit 2");
-    }
-
     public void SendQuestions(int[] userIds, int[] questions)
     {
         object[] content = new object[] { userIds, questions };

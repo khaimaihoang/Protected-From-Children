@@ -17,6 +17,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     public UnityAction<int> onWinnerReceived;
     public UnityAction<int[]> onQuestionsReceived;
     public UnityAction<int[], int[]> onScoresReceived;
+    public UnityAction<int> onDestroyPlayerObject;
 
     public int playerUserId;
     public bool _isAuthentizated = false;
@@ -69,21 +70,6 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public void ScoresReceived(int[] userIds, int[] scores){
         onScoresReceived?.Invoke(userIds, scores);
-    }
-
-    public void DestroyPlayerObject(int userId)
-    {
-        Debug.Log("Destroying");
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject playerObject in players)
-        {
-            if (playerObject.GetComponent<PlayerManager>().userId == userId)
-            {
-                Debug.Log("Quit game");
-                Destroy(playerObject);
-                break;
-            }
-        }
     }
 
     public void LoadMinigameScene(int userId, int minigame)
