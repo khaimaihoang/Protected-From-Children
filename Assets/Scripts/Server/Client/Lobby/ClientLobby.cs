@@ -34,17 +34,9 @@ public class ClientLobby : MonoBehaviour
         return players[userId];
     }
 
-    void UpdatePlayerPosition(Dictionary<int, Vector3> playerPositionFromServer){
-        foreach(var player in players)
-        {
-            if (!playerPositionFromServer.ContainsKey(player.Key))
-            {
-                Debug.Log(player.Key);
-                Destroy(players[player.Key]);
-                players.Remove(player.Key);
-                break;
-            }
-        }
+    void UpdatePlayerPosition(Dictionary<int, Vector3> playerPositionFromServer)
+    {
+        DestroyPlayerQuitGame(playerPositionFromServer);
         foreach (var item in playerPositionFromServer)
         {
             int userId = item.Key;
@@ -56,8 +48,20 @@ public class ClientLobby : MonoBehaviour
             GameObject player = players[userId];
             player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
         }
+    }
 
-
+    void DestroyPlayerQuitGame(Dictionary<int, Vector3> playerPositionFromServer)
+    {
+        foreach (var player in players)
+        {
+            if (!playerPositionFromServer.ContainsKey(player.Key))
+            {
+                Debug.Log(player.Key);
+                Destroy(players[player.Key]);
+                players.Remove(player.Key);
+                break;
+            }
+        }
     }
 
     public void CreateNewPlayer(int newUserId){
