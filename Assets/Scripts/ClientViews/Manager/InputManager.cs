@@ -34,7 +34,8 @@ public enum NetworkEvent : byte
     JoinRoomEventCode,
     GetJoinRoomEventCode,
     PlayerQuitEventCode,
-    GetQuitEventCode,
+    PlayerLeaveEventCode,
+    GetPlayerLeaveEventCode,
 }
 
 public class InputManager : MonoSingleton<InputManager>

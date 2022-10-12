@@ -64,7 +64,7 @@ public class ReplyReceiver : MonoBehaviour
             object[] data = (object[])photonEvent.CustomData;
             int userId = (int)data[0];
             int minigame = (int)data[1];
-            ClientProcess.Instance.LoadMinigameScene(userId, minigame);
+            ClientProcess.Instance.LoadScene(userId, (Minigame)minigame + "Minigame");
         }
         else if (eventCode == (byte)NetworkEvent.GetJoinRoomEventCode)
         {
@@ -73,11 +73,16 @@ public class ReplyReceiver : MonoBehaviour
             int minigame = (int)data[1];
             if ((Minigame)minigame != Minigame.None)
             {
-                ClientProcess.Instance.LoadMinigameScene(userId, minigame);
+                ClientProcess.Instance.LoadScene(userId, (Minigame)minigame + "Minigame");
             } else
             {
                 Debug.Log("Can't join room");
             }
+        }
+        else if (eventCode == (byte)NetworkEvent.GetPlayerLeaveEventCode)
+        {
+            int userId = (int)photonEvent.CustomData;
+            ClientProcess.Instance.LoadScene(userId, "Lobby");
         }
     }
 }

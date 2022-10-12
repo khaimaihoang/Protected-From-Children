@@ -47,6 +47,12 @@ public class SendReply : MonoSingleton<SendReply>
         PhotonNetwork.RaiseEvent((byte)NetworkEvent.ChangeNewUserIdEventCode, content, raiseEventOptions, SendOptions.SendReliable);
     }
 
+    public void SendPlayerLeaveReply(object userId)
+    {
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.GetPlayerLeaveEventCode, userId,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
+
     public void SendWinnerReply(int userId)
     {
         object content = userId;

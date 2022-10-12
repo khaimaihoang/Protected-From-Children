@@ -95,5 +95,10 @@ public class RequestReceiver : MonoBehaviour
                 RoomManager.Instance.QuitMinigameRoom(RoomManager.Instance.roomOfPlayer[userId], userId);
             NetworkProcess.Instance.RemovePlayer(userId);
         }
+        else if (eventCode == (byte)NetworkEvent.PlayerLeaveEventCode)
+        {
+            int userId = (int)photonEvent.CustomData;
+            RoomManager.Instance.QuitMinigameRoom(RoomManager.Instance.roomOfPlayer[userId], userId);
+        }
     }
 }

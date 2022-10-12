@@ -39,7 +39,14 @@ public class SendRequest : MonoSingleton<SendRequest>
 
     public void SendRequestCheckNewUserId(int newUserId){
         object content = newUserId ;
-        PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestCheckNewUserIdEventCode, content, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.RequestCheckNewUserIdEventCode, content, 
+            new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    }
+
+    public void SendPlayerLeaveRequest(int userId)
+    {
+        PhotonNetwork.RaiseEvent((byte)NetworkEvent.PlayerLeaveEventCode, userId,
+            new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
 
     public void SendCreateNewRoomRequest(int roomCode, int userId, Minigame minigame = Minigame.Quiz)

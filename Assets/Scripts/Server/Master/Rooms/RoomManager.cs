@@ -35,18 +35,19 @@ public class RoomManager : MonoSingleton<RoomManager>
         }
     }
 
-    public void QuitMinigameRoom(int roomId, int viewId)
+    public void QuitMinigameRoom(int roomId, int userId)
     {
         if (roomInfos.ContainsKey(roomId))
         {
-            if (roomInfos[roomId].currentPlayers.Contains(viewId))
+            if (roomInfos[roomId].currentPlayers.Contains(userId))
             {
-                roomInfos[roomId].RemovePlayer(viewId);
+                roomInfos[roomId].RemovePlayer(userId);
                 if (roomInfos[roomId].currentPlayers.Count == 0)
                 {
                     DictionaryRemove(roomId);
                 }
             }
+            SendReply.Instance.SendPlayerLeaveReply(userId);
         }
     }
 

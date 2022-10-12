@@ -64,7 +64,7 @@ public class ClientLobby : MonoBehaviour
         }
     }
 
-    public void CreateNewPlayer(int newUserId){
+    private void CreateNewPlayer(int newUserId){
         if (ClientProcess.Instance.playerUserId != newUserId) return;
         CreatePlayerWithUserId(newUserId);
         ClientProcess.Instance._isAuthentizated = true;
@@ -85,7 +85,7 @@ public class ClientLobby : MonoBehaviour
         players[userId] = newPlayer;
     }
 
-    public void ChangeUserId(int newUserId)
+    private void ChangeUserId(int newUserId)
     {
         if (ClientProcess.Instance.playerUserId == newUserId && !ClientProcess.Instance._isAuthentizated)
         {
@@ -93,7 +93,7 @@ public class ClientLobby : MonoBehaviour
         }
     }
 
-    public void GenNewPlayeruserId(){
+    private void GenNewPlayeruserId(){
         int newUserId = UnityEngine.Random.Range(0, 10);
         ClientProcess.Instance.playerUserId = newUserId;
         // PlayerPrefs.SetInt("userId", newUserId);

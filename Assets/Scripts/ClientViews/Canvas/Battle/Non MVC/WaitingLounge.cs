@@ -51,7 +51,7 @@ public class WaitingLounge : MonoBehaviour
     private void OnControllerLeaveRoomClicked()
     {
         Debug.Log("Player left room");
-        //Send request left room
+        SendRequest.Instance.SendPlayerLeaveRequest(ClientProcess.Instance.playerUserId);
     }
 
     private void OnControllerStartBattle(int[] questions)

@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using Photon.Realtime;
 using System;
-using UnityEngine.SceneManagement;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
 
 public class ClientProcess : MonoSingleton<ClientProcess>
 {
@@ -17,7 +16,6 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     public UnityAction<int> onWinnerReceived;
     public UnityAction<int[]> onQuestionsReceived;
     public UnityAction<int[], int[]> onScoresReceived;
-    public UnityAction<int> onDestroyPlayerObject;
 
     public int playerUserId;
     public bool _isAuthentizated = false;
@@ -72,11 +70,17 @@ public class ClientProcess : MonoSingleton<ClientProcess>
         onScoresReceived?.Invoke(userIds, scores);
     }
 
-    public void LoadMinigameScene(int userId, int minigame)
+    /*public void LoadMinigameScene(int userId, int minigame)
     {
         if (ClientProcess.Instance.playerUserId == userId)
         {
             SceneManager.LoadScene((Minigame)minigame + "Minigame");
         }
+    }*/
+
+    public void LoadScene(int userId, string scene)
+    {
+        if (playerUserId == userId)
+            SceneManager.LoadScene(scene);
     }
 }
