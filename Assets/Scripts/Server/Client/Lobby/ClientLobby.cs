@@ -30,9 +30,9 @@ public class ClientLobby : MonoBehaviour
         ClientProcess.Instance.onGetPlayerGameObjectWithId -= GetPlayerGameObjectWithId;
     }
 
-    private void CheckPlayerObject()
+    private void CheckPlayerObject(int userId)
     {
-        if (ClientProcess.Instance.playerUserId != 0)
+        if (ClientProcess.Instance.playerUserId == userId)
         {
             Init();
         }
@@ -52,7 +52,7 @@ public class ClientLobby : MonoBehaviour
             if (!players.ContainsKey(userId))
             {
                 CreatePlayerWithUserId(userId);
-                CheckPlayerObject();
+                CheckPlayerObject(userId);
             }
             GameObject player = players[userId];
             player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
