@@ -58,7 +58,7 @@ public class ResultLounge : MonoBehaviour
     {
         //Get winner text name
         //Get current player score
-        _winnerText.text = "WINNER: " + _winnerID;
+        _winnerText.text = "WINNER ID: " + _winnerID;
         _scoreText.text = "Your Score: " + _myScore; //+ BattleLounge.points;
         
     }

@@ -49,8 +49,8 @@ public class RequestReceiver : MonoBehaviour
             //    return;
             //}
             int playerRoomId = RoomManager.Instance.roomOfPlayer[userId];
-            Debug.Log("UserID: " + userId);
-            Debug.Log("Answer: " + answers[0]);
+            //Debug.Log("UserID: " + userId);
+            //Debug.Log("Answer Length: " + answers.Length);
             RoomManager.Instance.roomInfos[playerRoomId].battleProcess.AnswerReceived(userId, answers);
         }
         else if (eventCode == (byte)NetworkEvent.PlayerReadyEventCode)

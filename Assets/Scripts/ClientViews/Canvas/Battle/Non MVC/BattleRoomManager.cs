@@ -55,6 +55,7 @@ public class BattleRoomManager : MonoSingleton<BattleRoomManager>
 
     public void RequestOnSendAnswers(string[] playerAnswers)
     {
+        //Debug.Log("RequestOnSendAnswers: AnswerLength = " + playerAnswers.Length);
         SendRequest.Instance.SendAnswers(playerAnswers);
     }
 }

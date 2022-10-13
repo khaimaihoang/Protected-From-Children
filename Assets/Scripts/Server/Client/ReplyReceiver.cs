@@ -46,6 +46,7 @@ public class ReplyReceiver : MonoBehaviour
             object[] data = (object[])photonEvent.CustomData;
             int[] userIds = (int[])data[0];
             int[] scores = (int[])data[1];
+            //Debug.Log("Length: " + scores.Length);
             ClientProcess.Instance.ScoresReceived(userIds, scores);
         }
         else if (eventCode == (byte)NetworkEvent.NewUserIdAcceptedEventCode){

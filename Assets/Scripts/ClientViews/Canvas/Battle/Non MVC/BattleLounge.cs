@@ -49,6 +49,7 @@ public class BattleLounge : MonoBehaviour
         _timerText = GameObject.Find("Timer").GetComponentInChildren<Text>();
 
         currentIdx = 0;
+        _playerAnswers = new List<string>();
         _questForms = QuestionLoader.LoadQuestion();
         _AButton.onClick.AddListener(() => { OnControllerAnswerClicked(_AButton); });
         _BButton.onClick.AddListener(() => { OnControllerAnswerClicked(_BButton); });
@@ -75,7 +76,8 @@ public class BattleLounge : MonoBehaviour
     {
         if (currentIdx < _questionIds.Length)
         {
-            if(choseButton != null)
+            Debug.Log("CurrentIdx: " + currentIdx);
+            if (choseButton != null)
             {
                 _playerAnswers.Add(choseButton.GetComponentInChildren<Text>().text[0] + "");
             }
@@ -87,7 +89,7 @@ public class BattleLounge : MonoBehaviour
         }
         else
         {
-            Debug.Log("End game");
+            Debug.Log("End game + _playerAnswers.Length = " + _playerAnswers.Count);
             _battleLounge.SetActive(false);
             BattleRoomManager.Instance.RequestOnSendAnswers(_playerAnswers.ToArray());
             //this.OnControllerEndBattle();
