@@ -15,7 +15,7 @@ public class BattleProcess : MonoBehaviour
 {
     public int numberOfQuestions = 2;
     public int scorePerQuestion = 1;
-    private float _timeToWaitPerQuestion = 3f;
+    private float _timeToWaitPerQuestion = 4f;
     private List<int> _questions = new List<int>();
     private Dictionary<int, string> _answers = new Dictionary<int, string>();
 
@@ -50,6 +50,10 @@ public class BattleProcess : MonoBehaviour
         this.numberOfQuestions = numberOfQuestions;
         this._state = state;
         this.playerList = userId;
+        foreach(var player in playerList)
+        {
+            _playerScores.Add(player, 0);
+        }
     }
 
     private void SetState(int state)
@@ -69,8 +73,10 @@ public class BattleProcess : MonoBehaviour
         for (int i = 1; i < lines.Length; i++)
         {
             answer = lines[i].Split(',');
+            answer[1] = answer[1].Replace("\r", String.Empty);
             _answers.Add(int.Parse(answer[0]), answer[1]);
-            // Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])]);
+             //Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])].Length);
+
         }
     }
 
@@ -91,16 +97,21 @@ public class BattleProcess : MonoBehaviour
 
     public void AnswerReceived(int userId, string[] answers)
     {
-        foreach (string answer in answers)
-        {
-            // Debug.Log(userId + " answered: " + answer);
-        }
+        //Debug.Log("AnswerReceived + AnswerLength = " + answers.Length);
+        //foreach (string answer in answers)
+        //{
+        //     Debug.Log(userId + " answered: " + answer);
+        //}
 
         for (int i = 0; i < _questions.Count; i++)
         {
-            if (answers[i] == _answers[_questions[i]])
+            string value;
+            _answers.TryGetValue(_questions[i], out value);
+            //Debug.Log((value == null).ToString());
+            if (value != null && answers[i] == value)
             {
                 _playerScores[userId] += scorePerQuestion;
+                //Debug.Log(userId + " has score " + _playerScores[userId]);
             }
         }
     }
@@ -114,6 +125,7 @@ public class BattleProcess : MonoBehaviour
     IEnumerator WaitForAnswer(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
+        //Debug.Log("Player score key: " + _playerScores.Keys.ToArray().Length + ", Player score value: " + _playerScores.Values.ToArray().Length);
         SendReply.Instance.SendScores(_playerScores.Keys.ToArray(), _playerScores.Values.ToArray());
     }
 

@@ -49,6 +49,7 @@ public class BattleLounge : MonoBehaviour
         _timerText = GameObject.Find("Timer").GetComponentInChildren<Text>();
 
         currentIdx = 0;
+        _playerAnswers = new List<string>();
         _questForms = QuestionLoader.LoadQuestion();
         _AButton.onClick.AddListener(() => { OnControllerAnswerClicked(_AButton); });
         _BButton.onClick.AddListener(() => { OnControllerAnswerClicked(_BButton); });
@@ -73,9 +74,10 @@ public class BattleLounge : MonoBehaviour
     #region Controller
     private void OnControllerAnswerClicked(Button choseButton)
     {
-        if (currentIdx < _questForms.Count)
+        if (currentIdx <= _questionIds.Length)
         {
-            if(choseButton != null)
+
+            if (choseButton != null)
             {
                 _playerAnswers.Add(choseButton.GetComponentInChildren<Text>().text[0] + "");
             }
@@ -83,26 +85,35 @@ public class BattleLounge : MonoBehaviour
             {
                 _playerAnswers.Add("Null");
             }
+            if (currentIdx == _questionIds.Length)
+            {
+                Debug.Log("End game + _playerAnswers.Length = " + _playerAnswers.Count);
+                _battleLounge.SetActive(false);
+                BattleRoomManager.Instance.RequestOnSendAnswers(_playerAnswers.ToArray());
+                //this.OnControllerEndBattle();
+                StartCoroutine(WaitForOtherToFinish());
+                return;
+            }
             this.OnControllerRenewQuestion();
         }
         else
         {
-            Debug.Log("End game");
+            Debug.Log("End game + _playerAnswers.Length = " + _playerAnswers.Count);
             _battleLounge.SetActive(false);
+            BattleRoomManager.Instance.RequestOnSendAnswers(_playerAnswers.ToArray());
             //this.OnControllerEndBattle();
             StartCoroutine(WaitForOtherToFinish());
         }
+        
+        
     }
 
     private void OnControllerRenewQuestion()
     {
-        foreach(var item in _questForms)
+        QuestionForm myQuestion = _questForms.Find(x => x.id == _questionIds[currentIdx]);
+        if(myQuestion != null)
         {
-            if(item.id == _questionIds[currentIdx])
-            {
-                this.OnViewRenewQuestion(item);
-                break;
-            }
+            this.OnViewRenewQuestion(myQuestion);
         }
         currentIdx++;
 

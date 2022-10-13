@@ -44,7 +44,7 @@ public class WaitingLounge : MonoBehaviour
         Debug.Log("Player is ready");
         //Send request ready
         _isReady = !_isReady;
-        SendRequest.Instance.SendPlayerReadyRequest();
+        BattleRoomManager.Instance.RequestOnSendReadyState(_isReady);
         this.OnViewReadyBattleClicked();
     }
 

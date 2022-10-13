@@ -44,4 +44,18 @@ public class BattleRoomManager : MonoSingleton<BattleRoomManager>
     {
         OnAnnounceWinner?.Invoke(viewIds, scores);
     }
+
+    public void RequestOnSendReadyState(bool isReady)
+    {
+        if (isReady)
+        {
+            SendRequest.Instance.SendPlayerReadyRequest();
+        }
+    }
+
+    public void RequestOnSendAnswers(string[] playerAnswers)
+    {
+        //Debug.Log("RequestOnSendAnswers: AnswerLength = " + playerAnswers.Length);
+        SendRequest.Instance.SendAnswers(playerAnswers);
+    }
 }

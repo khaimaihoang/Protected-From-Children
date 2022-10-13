@@ -44,11 +44,13 @@ public class RequestReceiver : MonoBehaviour
             object[] data = (object[])photonEvent.CustomData;
             int userId = (int)data[0];
             string[] answers = (string[])data[1];
-            if (PhotonNetwork.GetPhotonView(userId) == null)
-            {
-                return;
-            }
+            //if (PhotonNetwork.GetPhotonView(userId) == null)
+            //{
+            //    return;
+            //}
             int playerRoomId = RoomManager.Instance.roomOfPlayer[userId];
+            //Debug.Log("UserID: " + userId);
+            //Debug.Log("Answer Length: " + answers.Length);
             RoomManager.Instance.roomInfos[playerRoomId].battleProcess.AnswerReceived(userId, answers);
         }
         else if (eventCode == (byte)NetworkEvent.PlayerReadyEventCode)

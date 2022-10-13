@@ -7,7 +7,7 @@ public class ResultLounge : MonoBehaviour
 {
     private Button _leaveButton;
     private Text _scoreText, _winnerText;
-    private int _winnerID, _myScore;
+    private int _winnerID, _myScore, _myID;
     private GameObject _battleLounge, _waitingLounge, _resultLounge;
     
     public void Init()
@@ -17,6 +17,8 @@ public class ResultLounge : MonoBehaviour
         _winnerText = GameObject.Find("Winner").GetComponent<Text>();
 
         _leaveButton.onClick.AddListener(OnControllerLeaveRoomClicked);
+
+        _myID = ClientProcess.Instance.playerUserId;
     }
 
     public void Init(GameObject waitingLounge, GameObject battleLounge, GameObject resultLounge)
@@ -40,11 +42,11 @@ public class ResultLounge : MonoBehaviour
                 winnerID = viewIDs[i];
             }
 
-            //if (PlayerManager.IsMine(viewIds[i]))
-            //{
-            //    _myScore = scores[i];
-            //}
-            
+            if (_myID == viewIDs[i])
+            {
+                _myScore = scores[i];
+            }
+
         }
         this._winnerID = winnerID;
         this.OnViewAnnounceResult();
@@ -56,7 +58,7 @@ public class ResultLounge : MonoBehaviour
     {
         //Get winner text name
         //Get current player score
-        _winnerText.text = "WINNER: " + _winnerID;
+        _winnerText.text = "WINNER ID: " + _winnerID;
         _scoreText.text = "Your Score: " + _myScore; //+ BattleLounge.points;
         
     }
