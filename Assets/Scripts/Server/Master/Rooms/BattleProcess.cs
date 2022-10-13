@@ -70,7 +70,7 @@ public class BattleProcess : MonoBehaviour
         {
             answer = lines[i].Split(',');
             _answers.Add(int.Parse(answer[0]), answer[1]);
-            // Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])]);
+             Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])]);
         }
     }
 
@@ -91,9 +91,10 @@ public class BattleProcess : MonoBehaviour
 
     public void AnswerReceived(int userId, string[] answers)
     {
+        Debug.Log("AnswerReceived");
         foreach (string answer in answers)
         {
-            // Debug.Log(userId + " answered: " + answer);
+             Debug.Log(userId + " answered: " + answer);
         }
 
         for (int i = 0; i < _questions.Count; i++)

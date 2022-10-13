@@ -73,7 +73,7 @@ public class BattleLounge : MonoBehaviour
     #region Controller
     private void OnControllerAnswerClicked(Button choseButton)
     {
-        if (currentIdx < _questForms.Count)
+        if (currentIdx < _questionIds.Length)
         {
             if(choseButton != null)
             {
@@ -89,6 +89,7 @@ public class BattleLounge : MonoBehaviour
         {
             Debug.Log("End game");
             _battleLounge.SetActive(false);
+            BattleRoomManager.Instance.RequestOnSendAnswers(_playerAnswers.ToArray());
             //this.OnControllerEndBattle();
             StartCoroutine(WaitForOtherToFinish());
         }
@@ -96,13 +97,10 @@ public class BattleLounge : MonoBehaviour
 
     private void OnControllerRenewQuestion()
     {
-        foreach(var item in _questForms)
+        QuestionForm myQuestion = _questForms.Find(x => x.id == _questionIds[currentIdx]);
+        if(myQuestion != null)
         {
-            if(item.id == _questionIds[currentIdx])
-            {
-                this.OnViewRenewQuestion(item);
-                break;
-            }
+            this.OnViewRenewQuestion(myQuestion);
         }
         currentIdx++;
 
