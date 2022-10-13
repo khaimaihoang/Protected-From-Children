@@ -19,6 +19,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
 
     public int playerUserId;
     public bool _isAuthentizated = false;
+
     void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -26,7 +27,7 @@ public class ClientProcess : MonoSingleton<ClientProcess>
     }
 
     void Start(){
-        GenNewPlayerUserId();
+        if (playerUserId == 0) GenNewPlayerUserId();
     }
 
     public void UpdatePlayerPosition(int []userIds, Vector3[] poss)

@@ -73,7 +73,7 @@ public class RoomManager : MonoSingleton<RoomManager>
         {
             roomOfPlayer.Remove(viewId);
         }
-        Destroy(roomInfos[roomId]);
+        Destroy(roomInfos[roomId].gameObject);
         roomInfos.Remove(roomId);
     }
 }

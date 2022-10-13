@@ -10,8 +10,11 @@ public class NetworkManager : MonoBehaviour
     {
         GameObject client = Resources.Load<GameObject>("ClientManager");
         Instantiate(client);
-        client = Resources.Load<GameObject>("ClientNetwork");
-        Instantiate(client);
+        if (FindObjectOfType<PlayerQuit>() == null)
+        {
+            client = Resources.Load<GameObject>("ClientNetwork");
+            Instantiate(client);
+        }
     }
 
 }

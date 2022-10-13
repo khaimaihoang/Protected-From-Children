@@ -27,7 +27,6 @@ public class PullTileObject : MonoBehaviour
         // _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         _colliderScript = GetComponent<Collider2DGenerator>();
         _playerTransform = ClientProcess.Instance.GetThisPlayerGameObject().transform;
-
         GameObject _mainGrid = GameObject.Find("MainGrid");
         if (_mainGrid != null)
         {

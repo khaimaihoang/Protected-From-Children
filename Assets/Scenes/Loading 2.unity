@@ -382,7 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c730f34efff6ae344b13792645cb474b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roomName: GeneralRoom
+  _roomName: Demo
   scene: Lobby
   _joinGeneralRoom: {fileID: 0}
 --- !u!1 &523037893

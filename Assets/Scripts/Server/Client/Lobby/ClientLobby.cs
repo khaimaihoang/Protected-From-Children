@@ -30,6 +30,14 @@ public class ClientLobby : MonoBehaviour
         ClientProcess.Instance.onGetPlayerGameObjectWithId -= GetPlayerGameObjectWithId;
     }
 
+    private void CheckPlayerObject()
+    {
+        if (ClientProcess.Instance.playerUserId != 0)
+        {
+            Init();
+        }
+    }
+
     private GameObject GetPlayerGameObjectWithId(int userId){
         return players[userId];
     }
@@ -44,6 +52,7 @@ public class ClientLobby : MonoBehaviour
             if (!players.ContainsKey(userId))
             {
                 CreatePlayerWithUserId(userId);
+                CheckPlayerObject();
             }
             GameObject player = players[userId];
             player.GetComponent<PlayerMovement>().HandleMovementToPosition(pos);
@@ -67,6 +76,13 @@ public class ClientLobby : MonoBehaviour
     private void CreateNewPlayer(int newUserId){
         if (ClientProcess.Instance.playerUserId != newUserId) return;
         CreatePlayerWithUserId(newUserId);
+        Init();
+    }
+
+    private void Init()
+    {
+        Debug.Log("Lobby 2");
+
         ClientProcess.Instance._isAuthentizated = true;
         ClientsViewController.Instance.RequestOnInitPlayerViews();
         ClientsViewController.Instance.RequestOnStopToPull(false);
@@ -94,7 +110,7 @@ public class ClientLobby : MonoBehaviour
     }
 
     private void GenNewPlayeruserId(){
-        int newUserId = UnityEngine.Random.Range(0, 10);
+        int newUserId = UnityEngine.Random.Range(1, 10);
         ClientProcess.Instance.playerUserId = newUserId;
         // PlayerPrefs.SetInt("userId", newUserId);
         SendRequest.Instance.SendRequestCheckNewUserId(newUserId);
