@@ -75,7 +75,7 @@ public class BattleProcess : MonoBehaviour
             answer = lines[i].Split(',');
             answer[1] = answer[1].Replace("\r", String.Empty);
             _answers.Add(int.Parse(answer[0]), answer[1]);
-             Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])].Length);
+             //Debug.Log(answer[0] + " - " + _answers[int.Parse(answer[0])].Length);
 
         }
     }
@@ -103,15 +103,15 @@ public class BattleProcess : MonoBehaviour
         //     Debug.Log(userId + " answered: " + answer);
         //}
 
-        for (int i = 0; i < answers.Length; i++)
+        for (int i = 0; i < _questions.Count; i++)
         {
             string value;
             _answers.TryGetValue(_questions[i], out value);
-            Debug.Log((value == null).ToString());
+            //Debug.Log((value == null).ToString());
             if (value != null && answers[i] == value)
             {
                 _playerScores[userId] += scorePerQuestion;
-                Debug.Log(userId + " has score " + _playerScores[userId]);
+                //Debug.Log(userId + " has score " + _playerScores[userId]);
             }
         }
     }
@@ -125,7 +125,7 @@ public class BattleProcess : MonoBehaviour
     IEnumerator WaitForAnswer(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        Debug.Log("Player score key: " + _playerScores.Keys.ToArray().Length + ", Player score value: " + _playerScores.Values.ToArray().Length);
+        //Debug.Log("Player score key: " + _playerScores.Keys.ToArray().Length + ", Player score value: " + _playerScores.Values.ToArray().Length);
         SendReply.Instance.SendScores(_playerScores.Keys.ToArray(), _playerScores.Values.ToArray());
     }
 

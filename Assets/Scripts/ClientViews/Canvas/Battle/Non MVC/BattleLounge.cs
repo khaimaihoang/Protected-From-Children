@@ -74,9 +74,9 @@ public class BattleLounge : MonoBehaviour
     #region Controller
     private void OnControllerAnswerClicked(Button choseButton)
     {
-        if (currentIdx < _questionIds.Length)
+        if (currentIdx <= _questionIds.Length)
         {
-            Debug.Log("CurrentIdx: " + currentIdx);
+
             if (choseButton != null)
             {
                 _playerAnswers.Add(choseButton.GetComponentInChildren<Text>().text[0] + "");
@@ -84,6 +84,15 @@ public class BattleLounge : MonoBehaviour
             else
             {
                 _playerAnswers.Add("Null");
+            }
+            if (currentIdx == _questionIds.Length)
+            {
+                Debug.Log("End game + _playerAnswers.Length = " + _playerAnswers.Count);
+                _battleLounge.SetActive(false);
+                BattleRoomManager.Instance.RequestOnSendAnswers(_playerAnswers.ToArray());
+                //this.OnControllerEndBattle();
+                StartCoroutine(WaitForOtherToFinish());
+                return;
             }
             this.OnControllerRenewQuestion();
         }
@@ -95,6 +104,8 @@ public class BattleLounge : MonoBehaviour
             //this.OnControllerEndBattle();
             StartCoroutine(WaitForOtherToFinish());
         }
+        
+        
     }
 
     private void OnControllerRenewQuestion()
