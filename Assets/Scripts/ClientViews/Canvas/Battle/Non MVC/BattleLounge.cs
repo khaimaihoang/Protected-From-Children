@@ -49,6 +49,7 @@ public class BattleLounge : MonoBehaviour
         _timerText = GameObject.Find("Timer").GetComponentInChildren<Text>();
 
         currentIdx = 0;
+        timerPerQuestion = 3;
         _playerAnswers = new List<string>();
         _questForms = QuestionLoader.LoadQuestion();
         _AButton.onClick.AddListener(() => { OnControllerAnswerClicked(_AButton); });
@@ -74,38 +75,25 @@ public class BattleLounge : MonoBehaviour
     #region Controller
     private void OnControllerAnswerClicked(Button choseButton)
     {
-        if (currentIdx <= _questionIds.Length)
+        if (choseButton != null)
         {
-
-            if (choseButton != null)
-            {
-                _playerAnswers.Add(choseButton.GetComponentInChildren<Text>().text[0] + "");
-            }
-            else
-            {
-                _playerAnswers.Add("Null");
-            }
-            if (currentIdx == _questionIds.Length)
-            {
-                Debug.Log("End game + _playerAnswers.Length = " + _playerAnswers.Count);
-                _battleLounge.SetActive(false);
-                BattleRoomManager.Instance.RequestOnSendAnswers(_playerAnswers.ToArray());
-                //this.OnControllerEndBattle();
-                StartCoroutine(WaitForOtherToFinish());
-                return;
-            }
-            this.OnControllerRenewQuestion();
+            _playerAnswers.Add(choseButton.GetComponentInChildren<Text>().text[0] + "");
         }
         else
         {
-            Debug.Log("End game + _playerAnswers.Length = " + _playerAnswers.Count);
+            _playerAnswers.Add("Null");
+        }
+
+        if (currentIdx >= _questionIds.Length)
+        {
+            Debug.Log("End battle");
             _battleLounge.SetActive(false);
             BattleRoomManager.Instance.RequestOnSendAnswers(_playerAnswers.ToArray());
             //this.OnControllerEndBattle();
             StartCoroutine(WaitForOtherToFinish());
+            return;
         }
-        
-        
+        this.OnControllerRenewQuestion();
     }
 
     private void OnControllerRenewQuestion()
@@ -158,7 +146,7 @@ public class BattleLounge : MonoBehaviour
 
     private void OnViewTimer()
     {
-        if(_currentTimer < 5)
+        if(_currentTimer < timerPerQuestion / 2)
         {
             _timerText.color = Color.red;
         }

@@ -15,7 +15,7 @@ public class BattleProcess : MonoBehaviour
 {
     public int numberOfQuestions = 2;
     public int scorePerQuestion = 1;
-    private float _timeToWaitPerQuestion = 4f;
+    private float _timeToWaitPerQuestion = 5f;
     private List<int> _questions = new List<int>();
     private Dictionary<int, string> _answers = new Dictionary<int, string>();
 
@@ -106,9 +106,7 @@ public class BattleProcess : MonoBehaviour
         for (int i = 0; i < _questions.Count; i++)
         {
             string value;
-            _answers.TryGetValue(_questions[i], out value);
-            //Debug.Log((value == null).ToString());
-            if (value != null && answers[i] == value)
+            if (_answers.TryGetValue(_questions[i], out value) && answers[i] == value)
             {
                 _playerScores[userId] += scorePerQuestion;
                 //Debug.Log(userId + " has score " + _playerScores[userId]);
