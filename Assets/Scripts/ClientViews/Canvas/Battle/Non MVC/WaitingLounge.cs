@@ -57,9 +57,9 @@ public class WaitingLounge : MonoBehaviour
     private void OnControllerStartBattle(int[] questions)
     {
         Debug.Log("Start battle now");
-        _battleLounge.SetActive(true);
         _waitingLounge.SetActive(false);
 
+        _battleLounge.SetActive(true);
         this.GetComponent<BattleLounge>().Init(_waitingLounge, _battleLounge, _resultLounge, questions);
     }
 
